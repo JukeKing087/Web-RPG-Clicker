@@ -1,0 +1,97 @@
+{
+  "items": [
+    {
+      "item_id": "item001",
+      "name": "Healing Potion",
+      "type": "consumable",
+      "description": "Restores 50 HP.",
+      "effect": {
+        "restore_health": 50
+      },
+      "rarity": "common"
+    },
+    {
+      "item_id": "item002",
+      "name": "Mana Elixir",
+      "type": "consumable",
+      "description": "Restores 30 MP.",
+      "effect": {
+        "restore_mana": 30
+      },
+      "rarity": "rare"
+    }
+  ],
+  "equipment": [
+    {
+      "equipment_id": "equip001",
+      "name": "Iron Sword",
+      "type": "weapon",
+      "description": "A sturdy sword made of iron.",
+      "attributes": {
+        "attack_power": 25,
+        "durability": 100
+      },
+      "rarity": "uncommon"
+    },
+    {
+      "equipment_id": "equip002",
+      "name": "Steel Shield",
+      "type": "shield",
+      "description": "A solid shield crafted from steel.",
+      "attributes": {
+        "defense_power": 20,
+        "durability": 150
+      },
+      "rarity": "rare"
+    },
+    {
+      "equipment_id": "equip003",
+      "name": "Mage's Robe",
+      "type": "armor",
+      "description": "A robe worn by mages that enhances magical abilities.",
+      "attributes": {
+        "defense_power": 10,
+        "magic_boost": 15
+      },
+      "rarity": "epic"
+    }
+  ],
+  "achievements": [
+    {
+      "achievement_id": "ach001",
+      "name": "First Dungeon Completion",
+      "description": "Complete your first dungeon.",
+      "criteria": {
+        "dungeon_completions": 1
+      },
+      "reward": {
+        "gold": 500,
+        "item_id": "item001"
+      }
+    },
+    {
+      "achievement_id": "ach002",
+      "name": "Master Warrior",
+      "description": "Reach level 50.",
+      "criteria": {
+        "level": 50
+      },
+      "reward": {
+        "gold": 1000,
+        "equipment_id": "equip001"
+      }
+    },
+    {
+      "achievement_id": "ach003",
+      "name": "Dungeon Conqueror",
+      "description": "Complete all dungeons up to level 10.",
+      "criteria": {
+        "dungeon_levels_completed": 10
+      },
+      "reward": {
+        "gold": 2000,
+        "equipment_id": "equip002"
+      }
+    }
+  ]
+}
