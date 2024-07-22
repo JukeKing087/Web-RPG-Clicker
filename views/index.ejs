@@ -1,21 +1,46 @@
 <!-- views/index.ejs -->
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EJS with Tailwind CSS</title>
+  <title>RPG Clicker Game</title>
   <link href="/styles/tailwind.css" rel="stylesheet">
 </head>
-<body class="bg-gray-100 text-gray-900">
-  <header class="bg-blue-600 p-4 text-white">
-    <h1 class="text-2xl font-bold">EJS with Tailwind CSS</h1>
-  </header>
-  <main class="p-4">
-    <h2 class="text-xl font-semibold">Welcome to your EJS and Tailwind CSS project!</h2>
-  </main>
-  <footer class="bg-blue-600 p-4 text-white text-center">
-    <p>&copy; 2024 My Project</p>
-  </footer>
+
+<body class="font-sans flex items-center justify-center h-screen bg-gray-100 m-0">
+  <div class="flex flex-col bg-white rounded-lg shadow-lg overflow-hidden w-full max-w-4xl">
+    <h1 id="clickAmount" class="bg-blue-500 text-white text-center py-2 text-xl border-b-2 border-blue-600">
+      Clicks: 0
+    </h1>
+    <div class="flex flex-grow p-5">
+      <div class="flex-1 text-center bg-gray-100 rounded-lg shadow-md mx-2 p-4">
+        <h2 class="text-lg mb-2">Your Stats</h2>
+        <p>Level: <span id="playerLevel" class="font-bold">1</span></p>
+        <p>XP: <span id="playerXP" class="font-bold">0</span></p>
+        <p>Attack: <span id="playerAttack" class="font-bold">10</span></p>
+        <p>Defense: <span id="playerDefense" class="font-bold">5</span></p>
+        <p>Health: <span id="playerHealth" class="font-bold">30</span></p>
+      </div>
+      <div class="flex-1 text-center bg-gray-100 rounded-lg shadow-md mx-2 p-4">
+        <h2 class="text-lg mb-2">Enemy Stats</h2>
+        <p>Name: <span id="enemyName" class="font-bold">Goblin</span></p>
+        <p>Level: <span id="enemyLevel" class="font-bold">1</span></p>
+        <p>Attack: <span id="enemyAttack" class="font-bold">8</span></p>
+        <p>Defense: <span id="enemyDefense" class="font-bold">3</span></p>
+        <p>Health: <span id="enemyHealth" class="font-bold">20</span></p>
+      </div>
+    </div>
+    <button id="clickButton" class="bg-blue-500 text-white py-2 px-4 text-lg rounded-lg cursor-pointer transition-colors duration-300 hover:bg-blue-600 mx-auto mb-4" onclick="clickHandler()">
+      Click Me!
+    </button>
+  </div>
+
+  <p id="inventory">Inventory: </p>
+  <p id="equipment">Equipment: </p>
+
+  <script src="/js/game.js"></script>
 </body>
+
 </html>
