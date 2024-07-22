@@ -1,6 +1,7 @@
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
+const bcrypt = require('bcrypt');
 const router = express.Router();
 
 const dbPath = path.join(__dirname, '../database/users.json');
@@ -27,12 +28,12 @@ router.get('/signup', (req, res) => {
 });
 
 // Handle login POST request
-router.post('/login', (req, res) => {
+router.post('/login', async (req, res) => {
   const { username, password } = req.body;
   const users = readDatabase();
 
-  const user = users.find(user => user.username === username && user.password === password);
-  if (user) {
+  const user = users.find(user => user.username === username);
+  if (user && await bcrypt.compare(password, user.password)) {
     // Set session or JWT token here if needed
     res.redirect('/'); // Redirect to the home page or dashboard after login
   } else {
@@ -41,7 +42,7 @@ router.post('/login', (req, res) => {
 });
 
 // Handle signup POST request
-router.post('/signup', (req, res) => {
+router.post('/signup', async (req, res) => {
   const { username, email, password } = req.body;
   const users = readDatabase();
 
@@ -49,7 +50,8 @@ router.post('/signup', (req, res) => {
   if (existingUser) {
     res.render('signup', { error: 'Username or email already exists' });
   } else {
-    const newUser = { username, email, password };
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = { username, email, password: hashedPassword };
     users.push(newUser);
     writeDatabase(users);
     res.redirect('/login'); // Redirect to the login page after signup
