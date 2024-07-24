@@ -1,0 +1,78 @@
+{
+    "materials": {
+        "Gold Nugget": {
+            "id": "IM1",
+            "effect": "Sell for 100 Gold"
+        },
+        "Dragon Scale": {
+            "id": "IM2",
+            "effect": "Craft Dragon Armor"
+        },
+        "Goblin Hide": {
+            "id": "IM3",
+            "effect": "Used in crafting Goblin Armor"
+        },
+        "Goblin Bones": {
+            "id": "IM4",
+            "effect": "Crafting material for various items"
+        },
+        "Monster Core": {
+            "id": "IM5",
+            "effect": "Essential for high-level crafting and enhancements"
+        },
+        "Orc Hide": {
+            "id": "IM6",
+            "effect": "Used in crafting Ork Armor"
+        },
+        "Orc Bones": {
+            "id": "IM7",
+            "effect": "Crafting material for various items"
+        }
+    },
+    "cols": {
+        "copper": {
+            "id": "ICC",
+            "value": 1
+        },
+        "silver": {
+            "id": "ICS",
+            "value": 10
+        },
+        "gold": {
+            "id": "ICG",
+            "value": 100
+        },
+        "platinum": {
+            "id": "ICP",
+            "value": 1000
+        }
+    },
+    "scrolls": {
+        "Goblin Pet Scroll": {
+            "id": "IS1",
+            "effect": "Summons a Goblin pet when used"
+        },
+        "Shiny Goblin Pet Scroll": {
+            "id": "IS2",
+            "effect": "Summons a Shiny Goblin pet when used"
+        },
+        "Orc Pet Scroll": {
+            "id": "IS3",
+            "effect": "Summons a Orc pet when used"
+        },
+        "Shiny Orc Pet Scroll": {
+            "id": "IS4",
+            "effect": "Summons a Shiny Orc pet when used"
+        }
+    },
+    "gems": {
+        "Goblin Gem": {
+            "id": "IG1",
+            "effect": "Used in crafting or as a valuable collectible"
+        },
+        "Orc Gem": {
+            "id": "IG2",
+            "effect": "Used in crafting or as a valuable collectible"
+        }
+    }
+}

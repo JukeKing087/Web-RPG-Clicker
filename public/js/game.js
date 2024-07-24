@@ -1,55 +1,29 @@
-let player = {
-    id: Number,
-    name: String,
-    level: Number,
-    experience: Number,
-    health: Number,
-    maxHealth: Number,
-    mana: Number,
-    maxMana: Number,
+document.addEventListener('DOMContentLoaded', () => {
+    const clickButton = document.getElementById('clickButton');
 
-    // Stats
-    stats: {
-        strength: 15,      // Determines physical damage
-        agility: 12,       // Affects speed and evasion
-        intelligence: 18,  // Influences magic power
-        endurance: 14,     // Affects maximum health and stamina
-        charisma: 10       // Influences interactions and persuasion
-    },
+    clickButton.addEventListener('click', handleClick);
+});
 
-    inventory: [
-        { itemId: 'sword01', name: 'Sword', quantity: 1 },
-        { itemId: 'potion01', name: 'Health Potion', quantity: 3 }
-    ],
+async function handleClick() {
+    try {
+        const response = await fetch('/game/click', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ data: 1 }), // Modify this as needed to send appropriate data
+        });
 
-    skills: [
-        { skillId: 'fireball', name: 'Fireball', level: 3 },
-        { skillId: 'heal', name: 'Heal', level: 2 }
-    ],
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
 
-    position: { x: 200, y: 300 },
+        const result = await response.json();
+        console.log('Click result:', result);
 
-    statusEffects: [
-        { effectId: 'poisoned', duration: 3 }
-    ],
-
-    quests: [
-        { questId: 'quest01', name: 'Defeat the Dragon', status: 'inProgress' }
-    ],
-
-    achievements: [
-        { achievementId: 'firstKill', name: 'First Kill', dateUnlocked: '2024-07-21' }
-    ],
-
-    faction: 'Knights of Valor',
-
-    social: {
-        friends: ['player2', 'player3'],
-        guild: 'EpicGuild'
-    },
-
-    settings: {
-        sound: true,
-        graphicsQuality: 'high'
+        // Update the UI based on the result
+        // For example, you might update the number of clicks, player stats, enemy stats, etc.
+    } catch (error) {
+        console.error('Error:', error);
     }
-};
+}

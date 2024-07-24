@@ -1,7 +1,9 @@
 const express = require('express');
 const path = require('path');
 const dataRouter = require('./routes/dataRoutes');
-const authRouter = require('./routes/authRoutes'); // Import the new router
+const authRouter = require('./routes/authRoutes');
+const gameLogicRouter = require('./routes/gameLogic');
+
 
 const app = express();
 const port = 3000;
@@ -22,9 +24,15 @@ app.get('/', (req, res) => {
   res.render('index');
 });
 
+// Render the game page
+app.get('/game', (req, res) => {
+  res.render('game');
+});
+
 // Use authRouter for routes related to authentication
 app.use('/', authRouter);
 app.use('/database', dataRouter);
+app.use('/game', gameLogicRouter); // Use the game logic router
 
 // Handle 404 errors
 app.use((req, res, next) => {

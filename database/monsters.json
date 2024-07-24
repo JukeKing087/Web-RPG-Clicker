@@ -1,0 +1,231 @@
+{
+    "Normal": {
+        "Goblin": {
+            "id": "MN1",
+            "name": "Goblin",
+            "description": "A small but cunning creature with a knack for mischief and a penchant for collecting valuable items.",
+            "stats": {
+                "health": 100,
+                "attack": 10,
+                "defense": 5,
+                "speed": 15
+            },
+            "abilities": [
+                {
+                    "name": "Sneak Attack",
+                    "effect": "Deals additional damage when attacking from behind.",
+                    "damageBonus": 10,
+                    "condition": "Attacking from behind"
+                },
+                {
+                    "name": "Quick Feet",
+                    "effect": "Increases evasion and attack speed for a short duration.",
+                    "duration": 10,
+                    "evasionIncrease": 0.15,
+                    "speedIncrease": 0.10
+                }
+            ],
+            "drops": {
+                "Monster Core": {
+                    "id": "IM5",
+                    "chance": 60.000
+                },
+                "Goblin Bones": {
+                    "id": "IM4",
+                    "chance": 14.990
+                },
+                "Goblin Hide": {
+                    "id": "IM3",
+                    "chance": 10.000
+                },
+                "Iron Sword": {
+                    "id": "ENW1",
+                    "chance": 7.000
+                },
+                "Leather Armor": {
+                    "id": "ENA1",
+                    "chance": 5.000
+                },
+                "Goblin Gem": {
+                    "id": "IG1",
+                    "chance": 2.000
+                },
+                "Goblin Pet Scroll": {
+                    "id": "IS1",
+                    "chance": 0.010
+                }
+            }
+        },
+        "Orc": {
+            "id": "MN2",
+            "name": "Orc",
+            "description": "A formidable and brutish creature with immense strength and a thirst for battle. Known for their heavy armor and powerful attacks.",
+            "stats": {
+                "health": 200,
+                "attack": 20,
+                "defense": 15,
+                "speed": 10
+            },
+            "abilities": [
+                {
+                    "name": "Rage Smash",
+                    "effect": "Unleashes a powerful smash that deals heavy damage and knocks back enemies.",
+                    "damageBonus": 30,
+                    "knockbackDistance": 5
+                },
+                {
+                    "name": "Orc Toughness",
+                    "effect": "Increases health regeneration and reduces incoming damage.",
+                    "duration": 20,
+                    "healthRegen": 5,
+                    "damageReduction": 0.25
+                }
+            ],
+            "drops": {
+                "Monster Core": {
+                    "id": "IM5",
+                    "chance": 50.000
+                },
+                "Orc Bones": {
+                    "id": "IM7",
+                    "chance": 20.000
+                },
+                "Orc Hide": {
+                    "id": "IM6",
+                    "chance": 15.000
+                },
+                "Iron Sword": {
+                    "id": "ENW1",
+                    "chance": 10.000
+                },
+                "Heavy Armor": {
+                    "id": "ENA3",
+                    "chance": 4.000
+                },
+                "Orc Gem": {
+                    "id": "IG2",
+                    "chance": 1.500
+                },
+                "Orc Pet Scroll": {
+                    "id": "IS3",
+                    "chance": 0.050
+                }
+            }
+        }
+    },
+    "Shiny": {
+        "Shiny Goblin": {
+            "id": "MS1",
+            "name": "Shiny Goblin",
+            "description": "A rare variant of the goblin with a shiny appearance, known for its enhanced drops and increased value.",
+            "stats": {
+                "health": 100,
+                "attack": 12,
+                "defense": 7,
+                "speed": 18
+            },
+            "abilities": [
+                {
+                    "name": "Gleaming Slash",
+                    "effect": "Deals additional damage and has a chance to dazzle the target.",
+                    "damageBonus": 15,
+                    "dazzleChance": 0.15
+                },
+                {
+                    "name": "Glittering Defense",
+                    "effect": "Increases defense and reflects a portion of incoming damage.",
+                    "duration": 15,
+                    "defenseIncrease": 0.20,
+                    "damageReflection": 0.10
+                }
+            ],
+            "drops": {
+                "Monster Core": {
+                    "id": "IM5",
+                    "chance": 60.000
+                },
+                "Goblin Bones": {
+                    "id": "IM4",
+                    "chance": 14.990
+                },
+                "Goblin Hide": {
+                    "id": "IM3",
+                    "chance": 10.000
+                },
+                "Shiny Iron Sword": {
+                    "id": "ESW1",
+                    "chance": 7.000
+                },
+                "Shiny Leather Armor": {
+                    "id": "ESA1",
+                    "chance": 5.000
+                },
+                "Goblin Gem": {
+                    "id": "IG1",
+                    "chance": 2.000
+                },
+                "Shiny Goblin Pet Scroll": {
+                    "id": "IS1",
+                    "chance": 0.010
+                }
+            }
+        },
+        "Shiny Orc": {
+            "id": "MS2",
+            "name": "Shiny Orc",
+            "description": "An exceptionally rare and powerful variant of the Orc with a dazzling appearance and increased strength. Known for their enhanced abilities and valuable drops.",
+            "stats": {
+                "health": 250,
+                "attack": 25,
+                "defense": 20,
+                "speed": 8
+            },
+            "abilities": [
+                {
+                    "name": "Rage Smash",
+                    "effect": "Unleashes an even more powerful smash that deals massive damage and knocks back enemies.",
+                    "damageBonus": 40,
+                    "knockbackDistance": 6
+                },
+                {
+                    "name": "Shiny Toughness",
+                    "effect": "Significantly boosts health regeneration and reduces incoming damage even further.",
+                    "duration": 25,
+                    "healthRegen": 7,
+                    "damageReduction": 0.30
+                }
+            ],
+            "drops": {
+                "Monster Core": {
+                    "id": "IM5",
+                    "chance": 60.000
+                },
+                "Orc Bones": {
+                    "id": "IM7",
+                    "chance": 15.000
+                },
+                "Orc Hide": {
+                    "id": "IM6",
+                    "chance": 10.000
+                },
+                "Shiny Iron Sword": {
+                    "id": "ESW1",
+                    "chance": 8.000
+                },
+                "Shiny Heavy Armor": {
+                    "id": "ESA2",
+                    "chance": 4.000
+                },
+                "Orc Gem": {
+                    "id": "IG2",
+                    "chance": 2.000
+                },
+                "Shiny Orc Pet Scroll": {
+                    "id": "IS4",
+                    "chance": 0.050
+                }
+            }
+        }
+    },
+    "Boss": {}
+}
