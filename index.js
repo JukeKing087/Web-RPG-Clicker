@@ -22,17 +22,23 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Define routes
 app.get('/', (req, res) => {
   res.render('index');
-});
+}); 
 
 // Render the game page
 app.get('/game', (req, res) => {
-  res.render('game');
+  res.render('game', { enemy: {
+    name: 'Goblin', // Placeholder, will be updated by the route
+    level: 1,
+    attack: 10,
+    defense: 5,
+    health: 100
+  }});
 });
 
 // Use authRouter for routes related to authentication
 app.use('/', authRouter);
 app.use('/database', dataRouter);
-app.use('/game', gameLogicRouter); // Use the game logic router
+app.use('/game', gameLogicRouter);
 
 // Handle 404 errors
 app.use((req, res, next) => {

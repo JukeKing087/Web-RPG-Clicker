@@ -60,11 +60,11 @@
             </div>
             <div class="flex-1 text-center bg-gray-100 rounded-lg shadow-md mx-2 p-4">
               <h3 class="text-lg mb-2">Enemy Stats</h3>
-              <p>Name: <span id="enemyName" class="font-bold">Name</span></p>
-              <p>Level: <span id="enemyLevel" class="font-bold">Number</span></p>
-              <p>Attack: <span id="enemyAttack" class="font-bold">Number</span></p>
-              <p>Defense: <span id="enemyDefense" class="font-bold">Number</span></p>
-              <p>Health: <span id="enemyHealth" class="font-bold">Number</span></p>
+              <p>Name: <span id="enemyName" class="font-bold"><%= enemy.name %></span></p>
+              <p>Level: <span id="enemyLevel" class="font-bold"><%= enemy.level %></span></p>
+              <p>Attack: <span id="enemyAttack" class="font-bold"><%= enemy.attack %></span></p>
+              <p>Defense: <span id="enemyDefense" class="font-bold"><%= enemy.defense %></span></p>
+              <p>Health: <span id="enemyHealth" class="font-bold"><%= enemy.health %></span></p>
             </div>
           </div>
           <button id="clickButton" class="bg-blue-500 text-white py-2 px-4 text-lg rounded-lg cursor-pointer transition-colors duration-300 hover:bg-blue-600 mx-auto mb-4" onclick="handleClick()">
