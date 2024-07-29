@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const logger = require("../logger"); // Import the logger
 
 // Define the schema for monsters in each area
 const monsterSchema = new Schema({
@@ -80,5 +81,8 @@ const areaDBSchema = new Schema({
 
 // Create and export the model
 const AreaDB = mongoose.model("Areas", areaDBSchema);
+
+// Log schema creation or significant changes
+logger.log("areaDB.js", "Area schemas defined and model created.", "info");
 
 module.exports = AreaDB;

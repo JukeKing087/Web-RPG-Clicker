@@ -13,6 +13,8 @@ const { giveMonster } = require("./routes/gameLogic");
 const authMiddleware = require("./middleware/authMiddleware");
 const User = require("./database/userDB");
 
+const logger = require("./logger"); // Import the logger
+
 const app = express();
 const port = 3000;
 
@@ -55,64 +57,79 @@ app.use("/game", gameRoutes);
 
 app.get("/game", async (req, res) => {
   try {
-    console.log("Received request to /game");
+    logger.log("server.js", "Received request to /game", "info");
 
     // Check if the user is authenticated
     if (!req.user || !req.user._id) {
-      console.error("Unauthorized: User not authenticated");
+      logger.log("server.js", "Unauthorized: User not authenticated", "error");
       return res.status(401).send("Unauthorized: User not authenticated");
     }
 
     // Fetch user data
-    console.log("User ID:", req.user._id);
+    logger.log("server.js", `User ID: ${req.user._id}`, "info");
     const user = await User.findById(req.user._id).exec();
-    console.log("Fetched User:", user);
+    logger.log("server.js", `Fetched User: ${JSON.stringify(user)}`, "info");
 
     if (!user) {
-      console.error("User not found");
+      logger.log("server.js", "User not found", "error");
       return res.status(404).send("User not found");
     }
 
     // Get and process area name
     const areaName = user.player.attributes.area.toLowerCase();
-    console.log("Area Name:", areaName);
+    logger.log("server.js", `Area Name: ${areaName}`, "info");
 
     if (areaName === "village") {
-      console.log(
-        "User is in the village area. Rendering game with no monster."
+      logger.log(
+        "server.js",
+        "User is in the village area. Rendering game with no monster.",
+        "info"
       );
       return res.render("game", { user, monster: null });
     }
 
     // Use the giveMonster function to get a monster for the area
     const selectedMonster = await giveMonster(areaName);
-    console.log("Selected Monster:", selectedMonster);
+    logger.log(
+      "server.js",
+      `Selected Monster: ${JSON.stringify(selectedMonster)}`,
+      "info"
+    );
 
     // Render the game with the selected monster
-    console.log("Rendering game with selected monster");
+    logger.log("server.js", "Rendering game with selected monster", "info");
     res.render("game", { user, monster: selectedMonster });
   } catch (err) {
-    console.error("Error occurred during request handling:", err.message);
-    console.error("Stack Trace:", err.stack);
+    logger.log(
+      "server.js",
+      `Error occurred during request handling: ${err.message}`,
+      "error"
+    );
+    logger.log("server.js", `Stack Trace: ${err.stack}`, "error");
     res.status(500).send("Server error");
   }
 });
 
 // Handle 404 Errors
 app.use((req, res, next) => {
+  logger.log("server.js", "404 Error: Page Not Found", "warn");
   res.status(404).render("404", { error: "Page Not Found" });
 });
 
 // Handle Other Errors
 app.use((err, req, res, next) => {
-  console.error(err.stack);
+  logger.log("server.js", `500 Error: ${err.stack}`, "error");
   res.status(500).render("500", { error: "Something went wrong!" });
 });
 
 // Start the Server
 if (require.main === module) {
   app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
+    logger.log(
+      "server.js",
+      `Server running at http://localhost:${port}`,
+      "info"
+    );
   });
 }
 

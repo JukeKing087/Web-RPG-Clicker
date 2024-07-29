@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const logger = require("../logger"); // Import the logger
 
 // Define the schema for each type of item
 const itemSchema = new mongoose.Schema({
@@ -26,8 +27,7 @@ const itemsSchema = new mongoose.Schema({
     type: Map,
     of: itemSchema,
   },
-  coins: {
-    // Changed from `cols` to `coins`
+  cols: {
     type: Map,
     of: coinSchema,
   },
@@ -41,6 +41,10 @@ const itemsSchema = new mongoose.Schema({
   },
 });
 
+// Create and export the Items model
 const Items = mongoose.model("Items", itemsSchema);
+
+// Log schema creation or significant changes
+logger.log("itemDB", "Items schemas defined and model created.", "info");
 
 module.exports = Items;

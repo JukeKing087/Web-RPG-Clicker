@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const logger = require("../logger"); // Import the logger
 
 // Define the ability schema
 const abilitySchema = new mongoose.Schema(
@@ -72,6 +73,14 @@ const monstersSchema = new mongoose.Schema({
   },
 });
 
+// Create and export the Monster model
 const Monster = mongoose.model("Monster", monstersSchema);
+
+// Log schema creation or significant changes
+logger.log(
+  "monsterDB.js",
+  "Monster schemas defined and model created.",
+  "info"
+);
 
 module.exports = Monster;

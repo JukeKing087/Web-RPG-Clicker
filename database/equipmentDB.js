@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const logger = require("../logger"); // Import the logger
 
 // Define the schema for enchantments
 const enchantSchema = new mongoose.Schema({
@@ -88,5 +89,12 @@ const equipmentSchema = new mongoose.Schema({
 
 // Create the model for equipment
 const Equipment = mongoose.model("Equipment", equipmentSchema);
+
+// Log schema creation or significant changes
+logger.log(
+  "equipmentDB.js",
+  "Equipment schemas defined and model created.",
+  "info"
+);
 
 module.exports = Equipment;

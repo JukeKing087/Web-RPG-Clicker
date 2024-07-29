@@ -1,23 +1,39 @@
 // routes/gameLogic.js
 
-const express = require("express");
 const axios = require("axios");
+const logger = require("../logger"); // Import the logger
 
 async function getMonsterForArea(areaName) {
   try {
     const areaResponse = await axios.get(
       `http://localhost:3000/database/areas/name/${areaName}`
     );
-    console.log("Area Data Response Status:", areaResponse.status);
-    console.log("Area Data Response Headers:", areaResponse.headers);
-    console.log("Area Data:", areaResponse.data);
+    logger.log(
+      "gameLogic.js",
+      `Area Data Response Status: ${areaResponse.status}`,
+      "info"
+    );
+    logger.log(
+      "gameLogic.js",
+      `Area Data Response Headers: ${JSON.stringify(areaResponse.headers)}`,
+      "info"
+    );
+    logger.log(
+      "gameLogic.js",
+      `Area Data: ${JSON.stringify(areaResponse.data)}`,
+      "info"
+    );
 
     const areaData = areaResponse.data;
     const area = areaData.areas.find(
       (area) => area.name.toLowerCase() === areaName
     );
     const monsterData = area ? area.monsters : {};
-    console.log("Monster Data:", monsterData);
+    logger.log(
+      "gameLogic.js",
+      `Monster Data: ${JSON.stringify(monsterData)}`,
+      "info"
+    );
 
     const monsterIds = [];
     if (monsterData.normal) {
@@ -28,10 +44,18 @@ async function getMonsterForArea(areaName) {
       });
     }
 
-    console.log("Monster IDs:", monsterIds);
+    logger.log(
+      "gameLogic.js",
+      `Monster IDs: ${JSON.stringify(monsterIds)}`,
+      "info"
+    );
 
     if (monsterIds.length === 0) {
-      console.error("No valid monsters available for this area");
+      logger.log(
+        "gameLogic.js",
+        "No valid monsters available for this area",
+        "error"
+      );
       throw new Error("No valid monsters available for this area");
     }
 
@@ -47,7 +71,11 @@ async function getMonsterForArea(areaName) {
       const monsterId = id.slice(2);
 
       if (!category) {
-        console.error(`Invalid category prefix in ID ${id}`);
+        logger.log(
+          "gameLogic.js",
+          `Invalid category prefix in ID ${id}`,
+          "error"
+        );
         return Promise.reject(new Error(`Invalid category prefix in ID ${id}`));
       }
 
@@ -55,53 +83,87 @@ async function getMonsterForArea(areaName) {
       return axios
         .get(url)
         .then((response) => {
-          console.log(`Monster data for ID ${id} - Status: ${response.status}`);
-          console.log(`Monster data for ID ${id}:`, response.data);
+          logger.log(
+            "gameLogic.js",
+            `Monster data for ID ${id} - Status: ${response.status}`,
+            "info"
+          );
+          logger.log(
+            "gameLogic.js",
+            `Monster data for ID ${id}: ${JSON.stringify(response.data)}`,
+            "info"
+          );
           return response.data;
         })
         .catch((err) => {
-          console.error(`Error fetching data for monster ID ${id}:`, err);
+          logger.log(
+            "gameLogic.js",
+            `Error fetching data for monster ID ${id}: ${err.message}`,
+            "error"
+          );
           throw err;
         });
     });
 
     const monsters = await Promise.all(monsterPromises);
-    console.log("Monsters Data:", monsters);
+    logger.log(
+      "gameLogic.js",
+      `Monsters Data: ${JSON.stringify(monsters)}`,
+      "info"
+    );
 
     const totalWeight = monsters.reduce(
       (sum, monster) => sum + (monster.spawnChance || 1),
       0
     );
-    console.log("Total Weight:", totalWeight);
+    logger.log("gameLogic.js", `Total Weight: ${totalWeight}`, "info");
 
     if (totalWeight === 0) {
-      console.error("Total weight is zero, cannot select a monster");
+      logger.log(
+        "gameLogic.js",
+        "Total weight is zero, cannot select a monster",
+        "error"
+      );
       throw new Error("Error selecting monster: No valid weights");
     }
 
     const randomWeight = Math.random() * totalWeight;
-    console.log("Random Weight:", randomWeight);
+    logger.log("gameLogic.js", `Random Weight: ${randomWeight}`, "info");
 
     let cumulativeWeight = 0;
     const selectedMonster = monsters.find((monster) => {
       cumulativeWeight += monster.spawnChance || 1;
-      console.log(
-        `Checking monster ${monster.name}: Cumulative Weight = ${cumulativeWeight}`
+      logger.log(
+        "gameLogic.js",
+        `Checking monster ${monster.name}: Cumulative Weight = ${cumulativeWeight}`,
+        "info"
       );
       return randomWeight < cumulativeWeight;
     });
 
-    console.log("Selected Monster:", selectedMonster);
+    logger.log(
+      "gameLogic.js",
+      `Selected Monster: ${JSON.stringify(selectedMonster)}`,
+      "info"
+    );
 
     if (!selectedMonster) {
-      console.error("No monster selected, which should not happen.");
+      logger.log(
+        "gameLogic.js",
+        "No monster selected, which should not happen.",
+        "error"
+      );
       throw new Error("Error selecting monster");
     }
 
     return selectedMonster;
   } catch (err) {
-    console.error("Error occurred during monster fetching:", err.message);
-    console.error("Stack Trace:", err.stack);
+    logger.log(
+      "gameLogic.js",
+      `Error occurred during monster fetching: ${err.message}`,
+      "error"
+    );
+    logger.log("gameLogic.js", `Stack Trace: ${err.stack}`, "error");
     throw new Error("Server error fetching monster data");
   }
 }
@@ -227,8 +289,12 @@ async function giveMonster(areaName) {
 
     return updatedMonster;
   } catch (err) {
-    console.error("Error occurred during monster selection:", err.message);
-    console.error("Stack Trace:", err.stack);
+    logger.log(
+      "gameLogic.js",
+      `Error occurred during monster selection: ${err.message}`,
+      "error"
+    );
+    logger.log("gameLogic.js", `Stack Trace: ${err.stack}`, "error");
     throw new Error("Server error selecting monster");
   }
 }
@@ -281,7 +347,11 @@ async function getUserProfile(userId) {
     );
     return userProfileResponse.data;
   } catch (error) {
-    console.error("Error fetching user profile:", error.message); // Logging error message
+    logger.log(
+      "gameLogic.js",
+      `Error fetching user profile: ${error.message}`,
+      "error"
+    );
     throw error; // Rethrow error for handling upstream
   }
 }

@@ -1,4 +1,7 @@
+// database/db.js
+
 const mongoose = require("mongoose");
+const logger = require("../logger"); // Adjust the path to where your logger is located
 
 const connectDB = async () => {
   try {
@@ -9,9 +12,9 @@ const connectDB = async () => {
         useUnifiedTopology: true,
       }
     );
-    console.log("MongoDB connected successfully");
+    logger.log("db.js", "MongoDB connected successfully", "info");
   } catch (err) {
-    console.error("Error connecting to MongoDB:", err);
+    logger.log("db.js", `Error connecting to MongoDB: ${err.message}`, "error");
     process.exit(1); // Exit the process with failure
   }
 };

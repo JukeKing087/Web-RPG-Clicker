@@ -3,8 +3,9 @@
 const express = require("express");
 const setUserMiddleware = require("../middleware/authMiddleware");
 const { getUserProfile, giveMonster } = require("./gameLogic"); // Adjust path as needed
-
 const User = require("../database/userDB");
+
+const logger = require("../logger"); // Import the logger
 
 const router = express.Router();
 
@@ -13,7 +14,11 @@ router.use("/user", setUserMiddleware);
 // GET user profile
 router.get("/user/profile", async (req, res) => {
   try {
-    console.log("Fetching user profile for user:", req.user._id); // Debugging line
+    logger.log(
+      "gameRoutes.js",
+      `Fetching user profile for user: ${req.user._id}`,
+      "info"
+    );
     const userProfile = await User.findById(req.user._id).select(
       "player.attributes player.name player.level player.experience"
     );
@@ -23,7 +28,11 @@ router.get("/user/profile", async (req, res) => {
       res.status(404).send("User profile not found");
     }
   } catch (err) {
-    console.error("Error fetching user profile:", err); // Debugging line
+    logger.log(
+      "gameRoutes.js",
+      `Error fetching user profile: ${err.message}`,
+      "error"
+    );
     res.status(500).send("Error fetching user profile");
   }
 });
@@ -46,7 +55,7 @@ router.post("/user/update-area", async (req, res) => {
 
     res.json({ success: true, message: "Area updated successfully" });
   } catch (error) {
-    console.error("Error details:", error); // Improved error logging
+    logger.log("gameRoutes.js", `Error details: ${error.message}`, "error");
     res.status(500).json({ error: "Server error" });
   }
 });
@@ -63,7 +72,11 @@ router.get("/account/:accountId", async (req, res) => {
 
     res.json(user);
   } catch (error) {
-    console.error("Error fetching user profile:", error.message);
+    logger.log(
+      "gameRoutes.js",
+      `Error fetching user profile: ${error.message}`,
+      "error"
+    );
     res.status(500).json({ error: "Internal server error" });
   }
 });
@@ -75,7 +88,11 @@ router.post("/random-monster", async (req, res) => {
     const userProfile = await getUserProfile(userId);
 
     if (userProfile.player.attributes.area === "Village") {
-      console.error("No monsters available in the village");
+      logger.log(
+        "gameRoutes.js",
+        "No monsters available in the village",
+        "warn"
+      );
       return res.status(400).send("No monsters available in the village");
     }
 
@@ -83,7 +100,7 @@ router.post("/random-monster", async (req, res) => {
     const monsters = await giveMonster(userProfile.player.attributes.area);
 
     if (monsters.length === 0) {
-      console.error("No monsters found for the area");
+      logger.log("gameRoutes.js", "No monsters found for the area", "warn");
       return res.status(404).send("No monsters found for the area");
     }
 
@@ -91,7 +108,11 @@ router.post("/random-monster", async (req, res) => {
     const randomMonster = monsters[Math.floor(Math.random() * monsters.length)];
     res.json(randomMonster);
   } catch (error) {
-    console.error("Error fetching random monster:", error.message);
+    logger.log(
+      "gameRoutes.js",
+      `Error fetching random monster: ${error.message}`,
+      "error"
+    );
     res.status(500).send("Internal server error");
   }
 });
@@ -124,7 +145,11 @@ router.post("/click", async (req, res) => {
       updatedExperience: userProfile.player.experience,
     });
   } catch (error) {
-    console.error("Error handling click:", error.message);
+    logger.log(
+      "gameRoutes.js",
+      `Error handling click: ${error.message}`,
+      "error"
+    );
     res.status(500).json({ error: "Internal server error" });
   }
 });

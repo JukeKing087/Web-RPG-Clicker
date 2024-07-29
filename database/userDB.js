@@ -1,4 +1,7 @@
+// database/userDB.js
+
 const mongoose = require("mongoose");
+const logger = require("../logger"); // Import the logger
 
 const { Schema, model } = mongoose;
 
@@ -98,5 +101,8 @@ const UserSchema = new Schema({
 
 // Create and export the User model
 const User = model("User", UserSchema);
+
+// Optional: Log schema creation or significant changes
+logger.log("userDB", "User schema created and model exported.", "info");
 
 module.exports = User;

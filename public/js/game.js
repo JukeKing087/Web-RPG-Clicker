@@ -7,9 +7,11 @@ document.addEventListener("DOMContentLoaded", () => {
     dropdownButton.addEventListener("click", (e) => {
       e.stopPropagation(); // Prevent click event from propagating
       dropdownMenu.classList.toggle("show"); // Toggle the visibility
-      console.log(
-        "Dropdown menu toggled:",
-        dropdownMenu.classList.contains("show") ? "Shown" : "Hidden"
+      logger.log(
+        "game.js",
+        "Dropdown menu toggled: " +
+          (dropdownMenu.classList.contains("show") ? "Shown" : "Hidden"),
+        "info"
       );
     });
 
@@ -17,14 +19,18 @@ document.addEventListener("DOMContentLoaded", () => {
     document.addEventListener("click", () => {
       if (dropdownMenu.classList.contains("show")) {
         dropdownMenu.classList.remove("show");
-        console.log("Dropdown menu hidden");
+        logger.log("game.js", "Dropdown menu hidden", "info");
       }
     });
 
     // Prevent the dropdown menu from closing when clicking inside it
     dropdownMenu.addEventListener("click", (e) => {
       e.stopPropagation();
-      console.log("Dropdown menu click event stopped from propagating");
+      logger.log(
+        "game.js",
+        "Dropdown menu click event stopped from propagating",
+        "info"
+      );
     });
   }
 
@@ -33,7 +39,7 @@ document.addEventListener("DOMContentLoaded", () => {
     link.addEventListener("click", async (e) => {
       e.preventDefault();
       const area = e.target.getAttribute("data-area");
-      console.log("Area selected:", area);
+      logger.log("game.js", "Area selected: " + area, "info");
 
       // Send a POST request to update the user's area
       try {
@@ -48,15 +54,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const data = await response.json();
         if (data.success) {
-          console.log("Area updated successfully:", data.message);
+          logger.log(
+            "game.js",
+            "Area updated successfully: " + data.message,
+            "info"
+          );
           // Optionally refresh the page or update UI
-          // location.reload(); // or update UI elements to reflect the change
-          location.reload();
+          location.reload(); // or update UI elements to reflect the change
         } else {
-          console.error("Error updating area:", data.error);
+          logger.log("game.js", "Error updating area: " + data.error, "error");
         }
       } catch (error) {
-        console.error("Error updating area:", error);
+        logger.log("game.js", "Error updating area: " + error.message, "error");
       }
     });
   });
@@ -160,14 +169,22 @@ document.addEventListener("DOMContentLoaded", () => {
     if (enemyAttack) enemyAttack.textContent = monsterData.attack;
     if (enemyDefense) enemyDefense.textContent = monsterData.defense;
 
-    console.log("Frontend updated with player and monster data");
+    logger.log(
+      "game.js",
+      "Frontend updated with player and monster data",
+      "info"
+    );
   }
 
   if (clickButton) {
     clickButton.addEventListener("click", () => {
       clicks += 1;
       if (clickAmount) clickAmount.textContent = `Clicks: ${clicks}`;
-      console.log("Click button pressed, total clicks:", clicks);
+      logger.log(
+        "game.js",
+        "Click button pressed, total clicks: " + clicks,
+        "info"
+      );
 
       // Simulate attack logic
       const damage = Math.max(
@@ -175,12 +192,12 @@ document.addEventListener("DOMContentLoaded", () => {
         playerData.stats.strength - monsterData.defense
       );
       monsterData.health -= damage;
-      console.log("Calculated damage:", damage);
+      logger.log("game.js", "Calculated damage: " + damage, "info");
 
       if (monsterData.health <= 0) {
         monsterData.health = 0;
         alert("Monster defeated!");
-        console.log("Monster defeated");
+        logger.log("game.js", "Monster defeated", "info");
         // You can add logic here to handle monster defeat, e.g., level up the player, change monster, etc.
       }
 
