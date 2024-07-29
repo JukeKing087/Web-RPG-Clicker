@@ -34,7 +34,13 @@ For Day 3: Think if we should have a boss after every dungeon or ever so often
 
 ## Day Four
 
-Not much as happened. took 5 hours to get some json to work. now im going to have to get the /users to work. Pain in the ass. no clue what im doing. i wish it was so much easier. wrist still hurts too. feels like im completely redoing all my code. had a working drop system back on day 2 and a working /database
+1. Not much as happened. took 5 hours to get some json to work. now im going to have to get the /users to work. Pain in the ass. no clue what im doing. i wish it was so much easier. wrist still hurts too. feels like im completely redoing all my code. had a working drop system back on day 2 and a working /database
+
+## Day Five
+
+## Day Six
+
+1. I'm at the other house now, I got a TON working. in the last 7 hours, dinner to 1, i got the gui to work, along with clicking AND a logging system. I updated the layout for everything too. Updated database to have clicks and col currency. **I LEARNED THE DATABASE DOESN'T UPDATE, SO WHEN YOU MAKE SOMETHING NEW, YOU HAVE TO DELETE THE SAVE OR DO IT MANUALLY!** so that might be a problem in the future, but we can get around that right? Wrist Update: Doesn't hurt at all anymore, just dont move it up.
 
 # Notes
 
@@ -63,11 +69,8 @@ Not much as happened. took 5 hours to get some json to work. now im going to hav
 
 # **NEED TO DO**
 
-- WORKING /users
-- WORKING /database
-- Test changing areas
-- Working click
-- working drop system
+- working monster death system (drop system, exp, and new monster)
 - MAKE THE DROP CHANCE ACTUALLY HAVE CHANCE NOT 100%
-1. **Home Screen**
-3. **MAKE THE MONSTERS HAVE RANGES OF LEVELS AND STATS**
+- working player leveling
+- working player attribute (choosing them and stuff like that)
+- Home Screen
