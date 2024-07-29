@@ -1,61 +1,111 @@
-const express = require('express');
-const fs = require('fs');
-const path = require('path');
-const bcrypt = require('bcrypt');
+const express = require("express");
+const passport = require("../passportConfig");
+const User = require("../database/userDB");
+const bcrypt = require("bcrypt");
+const { v4: uuidv4 } = require("uuid");
+const logger = require("../logger"); // Import the logger
+
 const router = express.Router();
 
-const dbPath = path.join(__dirname, '../database/users.json');
-
-// Utility function to read the database
-const readDatabase = () => {
-  const data = fs.readFileSync(dbPath);
-  return JSON.parse(data);
-};
-
-// Utility function to write to the database
-const writeDatabase = (data) => {
-  fs.writeFileSync(dbPath, JSON.stringify(data, null, 2));
-};
-
-// Handle GET request for login page
-router.get('/login', (req, res) => {
-  res.render('login');
+router.get("/login", (req, res) => {
+  res.render("login");
+  logger.log("authRoutes.js", "Rendered login page", "info");
 });
 
-// Handle GET request for signup page
-router.get('/signup', (req, res) => {
-  res.render('signup');
+router.get("/signup", (req, res) => {
+  res.render("signup");
+  logger.log("authRoutes.js", "Rendered signup page", "info");
 });
 
-// Handle login POST request
-router.post('/login', async (req, res) => {
-  const { username, password } = req.body;
-  const users = readDatabase();
-
-  const user = users.find(user => user.username === username);
-  if (user && await bcrypt.compare(password, user.password)) {
-    // Set session or JWT token here if needed
-    res.redirect('/'); // Redirect to the home page or dashboard after login
-  } else {
-    res.render('login', { error: 'Invalid username or password' });
+// Signup route
+router.post("/signup", async (req, res) => {
+  try {
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    const newUser = new User({
+      account: [
+        {
+          id: uuidv4(),
+          username: req.body.username,
+          email: req.body.email,
+          password: hashedPassword,
+        },
+      ],
+      player: {
+        name: req.body.username,
+        level: 1,
+        experience: 0,
+        health: 100,
+        maxHealth: 100,
+        mana: 50,
+        maxMana: 50,
+        stats: {
+          strength: 0,
+          agility: 0,
+          intelligence: 0,
+          endurance: 0,
+          charisma: 0,
+        },
+        inventory: [],
+        equipment: [],
+        skills: [],
+        statusEffects: [],
+        quests: [],
+        achievements: [],
+        faction: null,
+        social: {
+          friends: [],
+          guild: null,
+        },
+        settings: {
+          sound: true,
+          graphicsQuality: "medium",
+        },
+      },
+    });
+    await newUser.save();
+    res.redirect("/login");
+    logger.log(
+      "authRoutes.js",
+      `User signed up successfully: ${req.body.username}`,
+      "info"
+    );
+  } catch (err) {
+    logger.log("authRoutes.js", `Error during signup: ${err.message}`, "error");
+    res.redirect("/signup");
   }
 });
 
-// Handle signup POST request
-router.post('/signup', async (req, res) => {
-  const { username, email, password } = req.body;
-  const users = readDatabase();
-
-  const existingUser = users.find(user => user.username === username || user.email === email);
-  if (existingUser) {
-    res.render('signup', { error: 'Username or email already exists' });
-  } else {
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = { username, email, password: hashedPassword };
-    users.push(newUser);
-    writeDatabase(users);
-    res.redirect('/login'); // Redirect to the login page after signup
+// Login route
+router.post(
+  "/login",
+  passport.authenticate("local", {
+    successRedirect: "/game",
+    failureRedirect: "/login",
+    failureFlash: true,
+  }),
+  (req, res) => {
+    logger.log(
+      "authRoutes.js",
+      `User logged in: ${req.user ? req.user.username : "Unknown"}`,
+      "info"
+    );
   }
+);
+
+// Logout route
+router.get("/logout", (req, res, next) => {
+  req.logout((err) => {
+    if (err) {
+      logger.log(
+        "authRoutes.js",
+        `Error during logout: ${err.message}`,
+        "error"
+      );
+      return next(err);
+    }
+    logger.log("authRoutes.js", "User logged out successfully", "info");
+    res.redirect("/");
+  });
 });
 
 module.exports = router;

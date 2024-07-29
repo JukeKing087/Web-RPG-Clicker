@@ -4,84 +4,50 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>RPG Clicker Game</title>
+  <title>Home</title>
   <link href="/styles/tailwind.css" rel="stylesheet">
 </head>
 
-<body class="font-sans bg-gray-100 m-0">
-  <div class="flex flex-col h-screen">
+<body class="font-sans bg-gray-100">
+  <div class="flex flex-col min-h-screen">
     <!-- Top Menu -->
-    <header class="bg-blue-500 text-white p-4">
-      <div class="container mx-auto flex items-center justify-between">
+    <header class="bg-blue-600 text-white shadow-md">
+      <div class="container mx-auto flex items-center justify-between p-4">
         <!-- Left section -->
-        <div class="flex-1">
-          <h1 class="text-xl font-bold">RPG Clicker Game</h1>
+        <div class="flex items-center space-x-4">
+          <h1 class="text-2xl font-bold">RPG Clicker Game</h1>
         </div>
 
         <!-- Center navigation -->
-        <nav class="flex flex-1 justify-center">
-          <ul class="flex space-x-4">
-            <li><a href="#" class="hover:underline">Home</a></li>
-            <li><a href="#" class="hover:underline">About</a></li>
-            <li><a href="#" class="hover:underline">Contact</a></li>
-          </ul>
+        <nav class="hidden md:flex flex-1 justify-center space-x-6">
+          <a href="/" class="text-white hover:text-gray-200">Home</a>
+          <a href="#" class="text-white hover:text-gray-200">About</a>
+          <a href="#" class="text-white hover:text-gray-200">Contact</a>
+          <a href="/game" class="text-white hover:text-gray-200">Game</a>
         </nav>
 
         <!-- Right section -->
-        <div class="flex-1 flex justify-end space-x-4">
-          <a href="/login" class="py-1 px-4 rounded-lg hover:underline">Login</a>
-          <a href="/signup" class="bg-white text-blue-500 py-1 px-4 rounded-lg hover:bg-gray-200">Sign Up</a>
+        <div class="flex items-center space-x-4">
+          <a href="/login" class="text-white bg-gray-800 hover:bg-gray-700 py-2 px-4 rounded">Login</a>
+          <a href="/signup" class="text-blue-600 bg-white border border-blue-600 hover:bg-blue-50 py-2 px-4 rounded">Sign Up</a>
         </div>
       </div>
     </header>
 
-    <!-- Main Layout -->
-    <div class="flex flex-grow">
-      <!-- Left Sidebar -->
-      <aside class="w-64 bg-gray-200 p-4">
-        <h2 class="text-lg font-bold mb-2">Inventory:</h2>
-        <p id="inventory"></p>
-      </aside>
+    <!-- Main Content -->
+    <main class="flex-1 flex flex-col items-center justify-center p-6">
+      <h1 class="text-4xl font-bold mb-4">Welcome</h1>
+      <% if (user) { %>
+      <p class="text-lg mb-4">Hello, <%= user.account[0].username %>!</p>
+      <a href="/logout" class="text-blue-600 hover:underline">Logout</a>
+      <% } %>
+    </main>
 
-      <!-- Main Content -->
-      <main class="flex-1 flex flex-col items-center justify-center p-4">
-        <div class="flex flex-col bg-white rounded-lg shadow-lg overflow-hidden w-full max-w-4xl">
-          <h2 id="clickAmount" class="bg-blue-500 text-white text-center py-2 text-xl border-b-2 border-blue-600">
-            Clicks: 0
-          </h2>
-          <div class="flex flex-grow p-5">
-            <div class="flex-1 text-center bg-gray-100 rounded-lg shadow-md mx-2 p-4">
-              <h3 class="text-lg mb-2">Your Stats</h3>
-              <p>Level: <span id="playerLevel" class="font-bold">1</span></p>
-              <p>XP: <span id="playerXP" class="font-bold">0</span></p>
-              <p>Attack: <span id="playerAttack" class="font-bold">10</span></p>
-              <p>Defense: <span id="playerDefense" class="font-bold">5</span></p>
-              <p>Health: <span id="playerHealth" class="font-bold">30</span></p>
-            </div>
-            <div class="flex-1 text-center bg-gray-100 rounded-lg shadow-md mx-2 p-4">
-              <h3 class="text-lg mb-2">Enemy Stats</h3>
-              <p>Name: <span id="enemyName" class="font-bold">Goblin</span></p>
-              <p>Level: <span id="enemyLevel" class="font-bold">1</span></p>
-              <p>Attack: <span id="enemyAttack" class="font-bold">8</span></p>
-              <p>Defense: <span id="enemyDefense" class="font-bold">3</span></p>
-              <p>Health: <span id="enemyHealth" class="font-bold">20</span></p>
-            </div>
-          </div>
-          <button id="clickButton" class="bg-blue-500 text-white py-2 px-4 text-lg rounded-lg cursor-pointer transition-colors duration-300 hover:bg-blue-600 mx-auto mb-4" onclick="startGame()">
-            Click Me!
-          </button>
-        </div>
-      </main>
-
-      <!-- Right Sidebar -->
-      <aside class="w-64 bg-gray-200 p-4">
-        <h2 class="text-lg font-bold mb-2">Equipment:</h2>
-        <p id="equipment"></p>
-      </aside>
-    </div>
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white text-center py-4">
+      <p>&copy; 2024 RPG Clicker Game. All rights reserved.</p>
+    </footer>
   </div>
-
-  <script src="/js/old.game.js"></script>
 </body>
 
 </html>
