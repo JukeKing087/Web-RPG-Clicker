@@ -1,331 +1,296 @@
-const express = require('express');
-const fs = require('fs');
-const path = require('path');
+// routes/dataRoutes.js
+
+const express = require("express");
+const mongoose = require("mongoose");
+
+const Monster = require("../database/monstersDB");
+const Items = require("../database/itemsDB");
+const Equipment = require("../database/equipmentDB");
+const Areas = require("../database/areasDB");
+
 const router = express.Router();
 
-// Path to the JSON file
-const equipmentPath = path.join(__dirname, '../database/equipment.json');
-const itemsPath = path.join(__dirname, '../database/items.json');
-const monstersPath = path.join(__dirname, '../database/monsters.json');
+// Connect to MongoDB
+mongoose.connect(
+  "mongodb+srv://NazaRepr:Ace087Ace0807!@cluster0.7x4blwu.mongodb.net/gameDatabase",
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  }
+);
 
-// Helper Function to read JSON data
-const readData = (filePath, callback) =>
-    fs.readFile(filePath, 'utf8', (err, data) => {
-        if (err) {
-            callback(err);
-        } else {
-            callback(null, JSON.parse(data));
-        }
-    });
-
-// Get equipment data
-router.get('/equipment', (req, res) => {
-    readData(equipmentPath, (err, data) => {
-        if (err) {
-            res.status(500).send('Error Reading Data')
-        } else {
-            res.json(data)
-        }
-    })
-})
-
-// Get equipment by prefix
-router.get('/equipment/:prefix/', (req, res) => {
-    const { prefix } = req.params;
-
-    // Validate prefix format
-    if (!['ENA', 'ENW', 'ESA', 'ESW'].includes(prefix)) {
-        return res.status(400).send('Invalid prefix');
-    }
-
-    readData(equipmentPath, (err, data) => {
-        if (err) {
-            res.status(500).send('Error reading data');
-        } else {
-            const category = {
-                'ENA': 'normal',
-                'ENW': 'normal',
-                'ESA': 'shiny',
-                'ESW': 'shiny'
-            }[prefix];
-
-            const subcategory = {
-                'ENA': 'armor',
-                'ENW': 'weapons',
-                'ESA': 'armor',
-                'ESW': 'weapons'
-            }[prefix];
-
-            const categoryData = data[category];
-            let items = [];
-
-            // Search within a specific subcategory
-            if (subcategory && categoryData[subcategory]) {
-                items = Object.values(categoryData[subcategory]).filter(item =>
-                    item.id.startsWith(prefix) && item.id.length === prefix.length + 1
-                );
-            }
-
-            // Send response based on whether items were found
-            if (items.length > 0) {
-                res.json(items);
-            } else {
-                res.status(404).send('No equipment found for the given prefix');
-            }
-        }
-    });
+// Route to get all areas
+router.get("/areas", async (req, res) => {
+  try {
+    const areas = await Areas.find({}, "areas");
+    res.json(areas);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 });
 
-// Get equipment by prefix and numeric ID
-router.get('/equipment/:prefix/:id', (req, res) => {
-    const { prefix, id } = req.params;
+// Route to get an area by name
+router.get("/areas/name/:name", async (req, res) => {
+  const { name } = req.params;
+  try {
+    const area = await Areas.findOne({ "areas.name": name }, "areas.$");
+    if (!area) return res.status(404).json({ message: "Area not found" });
+    res.json(area);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
 
-    // Validate prefix format
-    if (!['ENA', 'ENW', 'ESA', 'ESW'].includes(prefix)) {
-        return res.status(400).send('Invalid prefix');
+// Route to get an area by ID
+router.get("/areas/id/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    const areaData = await Areas.findOne({ "areas.id": id }, { "areas.$": 1 });
+    if (!areaData) return res.status(404).json({ message: "Area not found" });
+
+    // Extract the specific area from the areas array
+    const area = areaData.areas.find((area) => area.id === id);
+
+    if (!area) return res.status(404).json({ message: "Area not found" });
+
+    res.json(area);
+  } catch (err) {
+    console.error("Error fetching area by ID:", err); // Debugging line
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// Get all equipment data
+router.get("/equipment", async (req, res) => {
+  try {
+    const equipment = await Equipment.findOne().exec();
+    res.json(equipment);
+  } catch (err) {
+    res.status(500).send("Error fetching data from MongoDB");
+  }
+});
+
+// Get equipment by type and category
+router.get("/equipment/:type/:category", async (req, res) => {
+  const { type, category } = req.params;
+
+  if (
+    !["normal", "shiny", "legendary"].includes(type) ||
+    !["armor", "weapons"].includes(category)
+  ) {
+    return res.status(400).send("Invalid type or category");
+  }
+
+  try {
+    const equipment = await Equipment.findOne({}, { [type]: 1 }).exec();
+    if (equipment && equipment[type] && equipment[type][category]) {
+      res.json(equipment[type][category]);
+    } else {
+      res.status(404).send("Category not found");
     }
+  } catch (err) {
+    res.status(500).send("Error fetching data from MongoDB");
+  }
+});
 
-    // Validate that ID is numeric
-    if (!/^\d+$/.test(id)) {
-        return res.status(400).send('Invalid ID format');
+// Get equipment by type, category, and full ID
+router.get("/equipment/:type/:category/:id", async (req, res) => {
+  const { type, category, id } = req.params;
+
+  warn("fix me :(");
+
+  if (
+    !["normal", "shiny", "legendary"].includes(type) ||
+    !["armor", "weapons"].includes(category)
+  ) {
+    return res.status(400).send("Invalid type or category");
+  }
+
+  try {
+    const equipment = await Equipment.findOne({}, { [type]: 1 }).exec();
+    if (equipment && equipment[type] && equipment[type][category]) {
+      const item = Object.values(equipment[type][category]).find(
+        (e) => e.id === id
+      );
+      if (item) {
+        res.json(item);
+      } else {
+        res.status(404).send("Item not found");
+      }
+    } else {
+      res.status(404).send("Category not found");
     }
-
-    readData(equipmentPath, (err, data) => {
-        if (err) {
-            return res.status(500).send('Error reading data');
-        }
-
-        const category = {
-            'ENA': 'normal',
-            'ENW': 'normal',
-            'ESA': 'shiny',
-            'ESW': 'shiny'
-        }[prefix];
-
-        const subcategory = {
-            'ENA': 'armor',
-            'ENW': 'weapons',
-            'ESA': 'armor',
-            'ESW': 'weapons'
-        }[prefix] || null;
-
-        const categoryData = data[category];
-        let items = [];
-
-        if (subcategory) {
-            // Search within a specific subcategory
-            if (categoryData[subcategory]) {
-                items = Object.values(categoryData[subcategory]).filter(item =>
-                    item.id.endsWith(id) // Only match numeric ID
-                );
-            }
-        } else {
-            // Search within all subcategories of the category
-            for (const type in categoryData) {
-                if (categoryData.hasOwnProperty(type)) {
-                    items.push(...Object.values(categoryData[type]).filter(item =>
-                        item.id.endsWith(id) // Only match numeric ID
-                    ));
-                }
-            }
-        }
-
-        // Send response based on whether items were found
-        if (items.length > 0) {
-            res.json(items);
-        } else {
-            res.status(404).send('Equipment not found');
-        }
-    });
+  } catch (err) {
+    res.status(500).send("Error fetching data from MongoDB");
+  }
 });
 
 // Get all items data
-router.get('/items', (req, res) => {
-    readData(itemsPath, (err, data) => {
-        if (err) {
-            res.status(500).send('Error Reading Data');
-        } else {
-            res.json(data);
-        }
-    });
+router.get("/items", async (req, res) => {
+  try {
+    const items = await Items.findOne().exec();
+    res.json(items);
+  } catch (err) {
+    console.error("Error fetching all items:", err); // Improved error logging
+    res.status(500).send("Error fetching data from MongoDB");
+  }
 });
 
 // Get items by category
-router.get('/items/:category', (req, res) => {
-    const { category } = req.params;
+router.get("/items/:category", async (req, res) => {
+  const { category } = req.params;
 
-    // Validate category format
-    if (!['IM', 'IC', 'IS', 'IG'].includes(category)) {
-        return res.status(400).send('Invalid category');
+  if (!["materials", "coins", "scrolls", "gems"].includes(category)) {
+    return res.status(400).send("Invalid category");
+  }
+
+  try {
+    const items = await Items.findOne({}, { [category]: 1 }).exec();
+    if (items && items[category]) {
+      res.json(items[category]);
+    } else {
+      res.status(404).send("Category not found");
     }
-
-    readData(itemsPath, (err, data) => {
-        if (err) {
-            return res.status(500).send('Error Reading Data');
-        }
-
-        const categoryData = data[{
-            'IM': 'materials',
-            'IC': 'cols',
-            'IS': 'scrolls',
-            'IG': 'gems'
-        }[category]];
-
-        if (categoryData) {
-            res.json(categoryData);
-        } else {
-            res.status(404).send('Category not found');
-        }
-    });
+  } catch (err) {
+    console.error("Error fetching items by category:", err); // Improved error logging
+    res.status(500).send("Error fetching data from MongoDB");
+  }
 });
 
-// Get items by category and numeric ID
-router.get('/items/:category/:id', (req, res) => {
-    const { category, id } = req.params;
+// Get item by category and ID
+router.get("/items/:category/:id", async (req, res) => {
+  const { category, id } = req.params;
 
-    // Validate category format
-    if (!['IM', 'IC', 'IS', 'IG'].includes(category)) {
-        return res.status(400).send('Invalid category');
+  if (!["materials", "coins", "scrolls", "gems"].includes(category)) {
+    return res.status(400).send("Invalid category");
+  }
+
+  if (!/^\d+$/.test(id)) {
+    return res.status(400).send("Invalid ID format");
+  }
+
+  try {
+    const items = await Items.findOne({}, { [category]: 1 }).exec();
+    if (items && items[category]) {
+      const item = items[category].find((i) => i.id === id);
+      if (item) {
+        res.json(item);
+      } else {
+        res.status(404).send("Item not found");
+      }
+    } else {
+      res.status(404).send("Category not found");
     }
-
-    // Validate that ID is numeric
-    if (!/^\d+$/.test(id)) {
-        return res.status(400).send('Invalid ID format');
-    }
-
-    readData(itemsPath, (err, data) => {
-        if (err) {
-            return res.status(500).send('Error Reading Data');
-        }
-
-        const categoryData = data[{
-            'IM': 'materials',
-            'IC': 'cols',
-            'IS': 'scrolls',
-            'IG': 'gems'
-        }[category]];
-
-        if (!categoryData) {
-            return res.status(404).send('Category not found');
-        }
-
-        // Find item by numeric ID
-        const item = Object.values(categoryData).find(item => item.id.endsWith(id));
-        if (item) {
-            res.json(item);
-        } else {
-            res.status(404).send('Item not found');
-        }
-    });
+  } catch (err) {
+    res.status(500).send("Error fetching data from MongoDB");
+  }
 });
 
-// Get monster data
-router.get('/monsters', (req, res) => {
-    readData(monstersPath, (err, data) => {
-        if (err) {
-            res.status(500).send('Error Reading Data')
-        } else {
-            res.json(data)
-        }
-    })
-})
+// Get all monsters
+router.get("/monsters", async (req, res) => {
+  try {
+    const monsters = await Monster.find().exec(); // Query for all monsters
+    res.json(monsters);
+  } catch (err) {
+    console.error("Error fetching monsters:", err);
+    res.status(500).send("Error Reading Data");
+  }
+});
 
 // Get monsters by category
-router.get('/monsters/:category', (req, res) => {
-    const { category } = req.params;
+router.get("/monsters/:category", async (req, res) => {
+  const { category } = req.params;
 
-    // Validate category format
-    if (!['MN', 'MS', 'MB'].includes(category)) {
-        return res.status(400).send('Invalid category');
+  // Validate category format
+  if (!["Normal", "Shiny", "Boss"].includes(category)) {
+    return res.status(400).send("Invalid category");
+  }
+
+  try {
+    const monsters = await Monster.findOne({}, { [category]: 1 }).exec();
+    if (monsters && monsters[category]) {
+      res.json(monsters[category]);
+    } else {
+      res.status(404).send("Category not found");
     }
-
-    readData(monstersPath, (err, data) => {
-        if (err) {
-            return res.status(500).send('Error Reading Data');
-        }
-
-        const categoryData = data[{
-            'MN': 'Normal',
-            'MS': 'Shiny',
-            'MB': 'Boss'
-        }[category]];
-
-        if (categoryData) {
-            res.json(categoryData);
-        } else {
-            res.status(404).send('Category not found');
-        }
-    });
+  } catch (err) {
+    console.error("Error fetching monsters by category:", err);
+    res.status(500).send("Error Reading Data");
+  }
 });
 
-// Get monsters by category and numeric ID
-router.get('/monsters/:category/:id', (req, res) => {
-    const { category, id } = req.params;
+// Get monster by exact ID across all categories
+router.get("/monsters/:id", async (req, res) => {
+  const { id } = req.params;
 
-    // Validate category format
-    if (!['MN', 'MS', 'MB'].includes(category)) {
-        return res.status(400).send('Invalid category');
-    }
-
-    // Validate that ID is numeric
-    if (!/^\d+$/.test(id)) {
-        return res.status(400).send('Invalid ID format');
-    }
-
-    readData(monstersPath, (err, data) => {
-        if (err) {
-            return res.status(500).send('Error Reading Data');
-        }
-
-        const categoryData = data[{
-            'MN': 'Normal',
-            'MS': 'Shiny',
-            'MB': 'Boss'
-        }[category]];
-
-        if (!categoryData) {
-            return res.status(404).send('Category not found');
-        }
-
-        // Find monster by numeric ID
-        const monster = Object.values(categoryData).find(monster => monster.id.endsWith(id));
+  try {
+    // Fetch all monsters and check each category
+    const monsterCategories = ["Normal", "Shiny", "Boss"];
+    for (const category of monsterCategories) {
+      const monsterCategory = await Monster.findOne(
+        {},
+        { [category]: 1 }
+      ).exec();
+      if (monsterCategory && monsterCategory[category]) {
+        const monster = Array.from(monsterCategory[category].values()).find(
+          (m) => m.id === id
+        ); // Find by exact ID
         if (monster) {
-            res.json(monster);
-        } else {
-            res.status(404).send('Monster not found');
+          return res.json(monster);
         }
-    });
+      }
+    }
+
+    // If no monster was found in any category
+    res.status(404).send("Monster not found");
+  } catch (err) {
+    console.error("Error fetching monster by ID:", err);
+    res.status(500).send("Error Reading Data");
+  }
 });
 
+// Function to extract numeric ID from a given ID
+const extractNumericId = (id) => {
+  const match = id.match(/\d+$/); // Extract numeric part from the end of the string
+  return match ? match[0] : null;
+};
 
-/*
-// Get all achievements
-router.get('/achievements', (req, res) => {
-    readData((err, data) => {
-        if (err) {
-            res.status(500).send('Error reading data');
-        } else {
-            res.json(data.achievements);
-        }
-    });
-});
+// Get monster by category and numeric ID
+router.get("/monsters/:category/:id", async (req, res) => {
+  let { category, id } = req.params;
 
-// Get a specific achievement by ID
-router.get('/achievements/:achievement_id', (req, res) => {
-    const { achievement_id } = req.params;
-    readData((err, data) => {
-        if (err) {
-            res.status(500).send('Error reading data');
-        } else {
-            const achievement = data.achievements.find(a => a.achievement_id === achievement_id);
-            if (achievement) {
-                res.json(achievement);
-            } else {
-                res.status(404).send('Achievement not found');
-            }
-        }
-    });
+  // Convert category to title case for matching with MongoDB schema
+  category = category.charAt(0).toUpperCase() + category.slice(1).toLowerCase();
+
+  // Validate category format
+  if (!["Normal", "Shiny", "Boss"].includes(category)) {
+    return res.status(400).send("Invalid category");
+  }
+
+  // Extract numeric part from ID
+  const numericId = extractNumericId(id);
+  if (!numericId) {
+    return res.status(400).send("Invalid ID format");
+  }
+
+  try {
+    const monsterCategory = await Monster.findOne({}, { [category]: 1 }).exec();
+    if (monsterCategory && monsterCategory[category]) {
+      const monster = Array.from(monsterCategory[category].values()).find((m) =>
+        m.id.endsWith(numericId)
+      ); // Find by numeric ID
+      if (monster) {
+        res.json(monster);
+      } else {
+        res.status(404).send("Monster not found");
+      }
+    } else {
+      res.status(404).send("Category not found");
+    }
+  } catch (err) {
+    console.error("Error fetching monster by category and numeric ID:", err);
+    res.status(500).send("Error Reading Data");
+  }
 });
-*/
 
 module.exports = router;

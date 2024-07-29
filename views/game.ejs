@@ -6,79 +6,210 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>RPG Clicker Game</title>
   <link href="/styles/tailwind.css" rel="stylesheet">
+  <style>
+    /* Custom dropdown styles */
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 100%;
+      right: 0;
+      background-color: white;
+      border: 1px solid #ccc;
+      border-radius: 0.5rem;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      z-index: 10;
+    }
+
+    .dropdown:hover .dropdown-menu,
+    .dropdown-menu.show {
+      display: block;
+    }
+  </style>
 </head>
 
 <body class="font-sans bg-gray-100 m-0">
-  <div class="flex flex-col h-screen">
+  <div class="flex flex-col min-h-screen">
     <!-- Top Menu -->
     <header class="bg-blue-500 text-white p-4">
       <div class="container mx-auto flex items-center justify-between">
-        <!-- Left section -->
         <div class="flex-1">
-          <h1 class="text-xl font-bold">RPG Clicker Game</h1>
+          <h1 class="text-2xl font-bold">RPG Clicker Game</h1>
         </div>
-
-        <!-- Center navigation -->
-        <nav class="flex flex-1 justify-center">
-          <ul class="flex space-x-4">
-            <li><a href="#" class="hover:underline">Home</a></li>
-            <li><a href="#" class="hover:underline">About</a></li>
-            <li><a href="#" class="hover:underline">Contact</a></li>
-          </ul>
-        </nav>
-
-        <!-- Right section -->
-        <div class="flex-1 flex justify-end space-x-4">
+        <div class="flex-1 text-center hidden md:block">
+          <p class="text-lg">Welcome to the Adventure!</p>
+        </div>
+        <div class="flex-1 flex justify-end space-x-4 items-center">
+          <% if (user && user.account && user.account.length > 0) { %>
+          <a href="/logout" class="py-1 px-4 rounded-lg hover:underline">Logout</a>
+          <% } else { %>
           <a href="/login" class="py-1 px-4 rounded-lg hover:underline">Login</a>
           <a href="/signup" class="bg-white text-blue-500 py-1 px-4 rounded-lg hover:bg-gray-200">Sign Up</a>
+          <% } %>
         </div>
       </div>
     </header>
 
     <!-- Main Layout -->
-    <div class="flex flex-grow">
-      <!-- Left Sidebar -->
-      <aside class="w-64 bg-gray-200 p-4">
+    <div class="flex flex-grow flex-col md:flex-row">
+      <!-- Left Sidebar (Inventory) -->
+      <aside class="w-full md:w-64 bg-gray-200 p-4 overflow-auto order-last md:order-first">
         <h2 class="text-lg font-bold mb-2">Inventory:</h2>
-        <p id="inventory"></p>
+        <ul class="space-y-2">
+          <% if (user && user.player && user.player.inventory) { %>
+          <% user.player.inventory.forEach(item => { %>
+          <li><%= item %></li>
+          <% }) %>
+          <% } else { %>
+          <li>No items in inventory</li>
+          <% } %>
+        </ul>
       </aside>
 
-      <!-- Main Content -->
-      <main class="flex-1 flex flex-col items-center justify-center p-4">
-        <div class="flex flex-col bg-white rounded-lg shadow-lg overflow-hidden w-full max-w-4xl">
-          <h2 id="clickAmount" class="bg-blue-500 text-white text-center py-2 text-xl border-b-2 border-blue-600">
-            Clicks: 0
-          </h2>
-          <div class="flex flex-grow p-5">
-            <div class="flex-1 text-center bg-gray-100 rounded-lg shadow-md mx-2 p-4">
-              <h3 class="text-lg mb-2">Your Stats</h3>
-              <p>Level: <span id="playerLevel" class="font-bold">1</span></p>
-              <p>XP: <span id="playerXP" class="font-bold">0</span></p>
-              <p>Attack: <span id="playerAttack" class="font-bold">10</span></p>
-              <p>Defense: <span id="playerDefense" class="font-bold">5</span></p>
-              <p>Health: <span id="playerHealth" class="font-bold">30</span></p>
-            </div>
-            <div class="flex-1 text-center bg-gray-100 rounded-lg shadow-md mx-2 p-4">
-              <h3 class="text-lg mb-2">Enemy Stats</h3>
-              <p>Name: <span id="enemyName" class="font-bold"><%= enemy.name %></span></p>
-              <p>Level: <span id="enemyLevel" class="font-bold"><%= enemy.level %></span></p>
-              <p>Attack: <span id="enemyAttack" class="font-bold"><%= enemy.attack %></span></p>
-              <p>Defense: <span id="enemyDefense" class="font-bold"><%= enemy.defense %></span></p>
-              <p>Health: <span id="enemyHealth" class="font-bold"><%= enemy.health %></span></p>
+      <!-- Main Content Area -->
+      <div class="flex flex-col flex-1 bg-white shadow-md p-4 relative">
+        <!-- Text and Dropdown Menu at Top Right -->
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-2xl font-bold">Main Game Area</h2>
+          <!-- Dropdown Button -->
+          <div class="dropdown relative">
+            <button id="dropdownButton" class="w-10 h-10 rounded-full bg-blue-600 text-white flex items-center justify-center hover:bg-blue-700 focus:outline-none">
+              <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+              </svg>
+            </button>
+            <div id="dropdownMenu" class="dropdown-menu mt-2">
+              <ul class="py-2">
+                <% if (user && user.player && user.player.level >= 1) { %>
+                <li><a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 area-link" data-area="village">Village</a></li>
+                <li><a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 area-link" data-area="training-fields">Training Fields</a></li>
+                <% } %>
+
+                <% if (user && user.player && user.player.level >= 3) { %>
+                <li><a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 area-link" data-area="slime-fields">Slime Fields</a></li>
+                <% } %>
+
+                <% if (user && user.player && user.player.level >= 6) { %>
+                <li><a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 area-link" data-area="goblin-forest">Goblin Forest</a></li>
+                <% } %>
+
+                <% if (user && user.player && user.player.level >= 10) { %>
+                <li><a href="#" class="block px-4 py-2 text-gray-700 hover:bg-gray-100 area-link" data-area="orc-kingdom">Orc Kingdom</a></li>
+                <% } %>
+              </ul>
             </div>
           </div>
-          <button id="clickButton" class="bg-blue-500 text-white py-2 px-4 text-lg rounded-lg cursor-pointer transition-colors duration-300 hover:bg-blue-600 mx-auto mb-4" onclick="handleClick()">
-            Click Me!
-          </button>
         </div>
-      </main>
 
-      <!-- Right Sidebar -->
-      <aside class="w-64 bg-gray-200 p-4">
+        <!-- Main Content -->
+        <main class="flex-1 p-4">
+          <div class="bg-white rounded-lg shadow-lg p-6">
+            <% if (user && user.player) { %>
+            <% if (user.player.attributes.area !== 'Village' && monster) { %>
+            <h2 id="clickAmount" class="bg-blue-500 text-white text-center py-2 text-xl border-b-2 border-blue-600 mb-4">
+              Clicks: 0
+            </h2>
+            <div>
+              <h3 class="text-lg mb-4 text-center">Your Stats</h3>
+              <div class="flex flex-col md:flex-row justify-center">
+                <!-- Your Stats Section -->
+                <div class="flex-1 flex flex-col bg-gray-100 rounded-lg shadow-md mx-2 p-4 text-center mb-4 md:mb-0">
+                  <!-- Stats and Attributes Header -->
+                  <h4 class="text-md font-bold mb-4">Your Stats</h4>
+                  <div class="flex justify-center mb-4 space-x-8">
+                    <!-- Stats Section (Left Side) -->
+                    <div>
+                      <h5 class="text-md font-bold mb-2">Stats</h5>
+                      <p>Level: <span id="playerLevel" class="font-bold"><%= user.player.level %></span></p>
+                      <p>Experience: <span id="playerXP" class="font-bold"><%= user.player.experience %></span></p>
+                      <p>Health: <span id="playerHealth" class="font-bold"><%= user.player.health %> / <%= user.player.maxHealth %></span></p>
+                      <p>Mana: <span id="playerMana" class="font-bold"><%= user.player.mana %> / <%= user.player.maxMana %></span></p>
+                    </div>
+                    <!-- Attributes Section (Right Side) -->
+                    <div>
+                      <h5 class="text-md font-bold mb-2">Attributes</h5>
+                      <p>Strength: <span id="playerStrength" class="font-bold"><%= user.player.stats.strength %></span></p>
+                      <p>Agility: <span id="playerAgility" class="font-bold"><%= user.player.stats.agility %></span></p>
+                      <p>Intelligence: <span id="playerIntelligence" class="font-bold"><%= user.player.stats.intelligence %></span></p>
+                      <p>Endurance: <span id="playerEndurance" class="font-bold"><%= user.player.stats.endurance %></span></p>
+                      <p>Charisma: <span id="playerCharisma" class="font-bold"><%= user.player.stats.charisma %></span></p>
+                    </div>
+                  </div>
+                </div>
+                <!-- Enemy Stats Section -->
+                <div class="flex-1 bg-gray-100 rounded-lg shadow-md mx-2 p-4 text-center">
+                  <h4 class="text-md font-bold mb-4">Enemy Stats</h4>
+                  <div class="flex flex-col md:flex-row justify-center mb-4 space-x-8">
+                    <!-- Enemy Basic Info -->
+                    <div>
+                      <h5 class="text-md font-bold mb-2">Enemy Basic Info</h5>
+                      <p>Name: <span id="enemyName" class="font-bold"><%= monster.name %></span></p>
+                      <p>Level: <span id="enemyLevel" class="font-bold"><%= monster.level %></span></p>
+                      <p>Health: <span id="enemyHealth" class="font-bold"><%= monster.player.health %> / <%= monster.player.maxHealth %></span></p>
+                      <p>Mana: <span id="playerMana" class="font-bold"><%= monster.player.mana %> / <%= monster.player.maxMana %></span></p>
+                    </div>
+                    <!-- Enemy Attributes -->
+                    <div>
+                      <h5 class="text-md font-bold mb-2">Enemy Attributes</h5>
+                      <p>Strength: <span id="enemyStrength" class="font-bold"><%= monster.stats.strength %></span></p>
+                      <p>Agility: <span id="enemyAgility" class="font-bold"><%= monster.stats.agility %></span></p>
+                      <p>Intelligence: <span id="enemyIntelligence" class="font-bold"><%= monster.stats.intelligence %></span></p>
+                      <p>Endurance: <span id="enemyEndurance" class="font-bold"><%= monster.stats.endurance %></span></p>
+                      <p>Charisma: <span id="enemyCharisma" class="font-bold"><%= monster.stats.charisma %></span></p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Click Button -->
+              <div class="flex justify-center mt-4">
+                <button id="clickButton" class="py-2 px-4 bg-blue-600 text-white rounded-lg shadow-md hover:bg-blue-700 focus:outline-none">
+                  Attack
+                </button>
+              </div>
+            </div>
+            <% } else { %>
+            <!-- Village View -->
+            <div class="p-5">
+              <h2 class="text-2xl text-center mb-4">Welcome to the Village!</h2>
+              <p class="text-lg text-center mb-4">Here you can rest and prepare for your next adventure.</p>
+              <div class="flex justify-center">
+                <a href="/shop" class="bg-green-500 text-white py-2 px-4 rounded-lg hover:bg-green-600">Visit the Shop</a>
+                <a href="/quests" class="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 ml-4">Check for Quests</a>
+              </div>
+            </div>
+            <% } %>
+            <% } else { %>
+            <div class="p-5">
+              <h2 class="text-2xl text-center mb-4">Welcome to RPG Clicker Game!</h2>
+              <p class="text-lg text-center mb-4">Please log in to start your adventure.</p>
+              <div class="flex justify-center">
+                <a href="/login" class="bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600">Login</a>
+              </div>
+            </div>
+            <% } %>
+          </div>
+        </main>
+      </div>
+
+      <!-- Right Sidebar (Equipment) -->
+      <aside class="w-full md:w-64 bg-gray-200 p-4 overflow-auto">
         <h2 class="text-lg font-bold mb-2">Equipment:</h2>
-        <p id="equipment"></p>
+        <ul class="space-y-2">
+          <% if (user && user.player && user.player.equipment) { %>
+          <% user.player.equipment.forEach(item => { %>
+          <li><%= item %></li>
+          <% }) %>
+          <% } else { %>
+          <li>No items equipped</li>
+          <% } %>
+        </ul>
       </aside>
     </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white text-center p-4">
+      <p>&copy; <%= new Date().getFullYear() %> RPG Clicker Game. All rights reserved.</p>
+    </footer>
   </div>
 
   <script src="/js/game.js"></script>

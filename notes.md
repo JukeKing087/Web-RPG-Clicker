@@ -26,7 +26,15 @@ For Day 3: Think if we should have a boss after every dungeon or ever so often
 
 ## Day Two Part 2
 
-1. Lots has happened, Internet is out now so i can't code anymore so im going to make a commit for where it is non after this. The game works well. but i still haven't made it enought to cross of the first task from day 1, i think im going to focus on small things right now instead of cool guis and animations. might look bad, but it will be much better to do after all my ideas are working in the code. SO now im going to list what i got done and add to the notes for ideas. I have the database working really well, the last 5 hours i coded the gameLogic so the dropped items would go to the inventory tab. IT WAS A PAIN IN THE A$$! Loving where this is going tho. Tomorrow I should work on the index.ejs before anything. Well added ideas and a need to do.
+1. Lots has happened, Internet is out now so I can't code anymore so im going to make a commit for where it is non after this. The game works well. but I still haven't made it enought to cross of the first task from day 1, I think im going to focus on small things right now instead of cool guis and animations. might look bad, but it will be much better to do after all my ideas are working in the code. SO now im going to list what I got done and add to the notes for ideas. I have the database working really well, the last 5 hours I coded the gameLogic so the dropped items would go to the inventory tab. IT WAS A PAIN IN THE A$$! Loving where this is going tho. Tomorrow I should work on the index.ejs before anything. Well added ideas and a need to do.
+
+## Day Three
+
+1. Kyle was over today, we ramped the jumps and I have a mild wrist sprain so I didn't get to code much. Authorization completely works now. I got the database on MongoDB now im transferring the reading to it. soon ill have to use /database/:prefix/:id to get items and monsters. Right now I have to do the items and equipment after I get the monster reading to work, I also think I going to do the monster chooser by hand based on "Maps/Areas". 
+
+## Day Four
+
+Not much as happened. took 5 hours to get some json to work. now im going to have to get the /users to work. Pain in the ass. no clue what im doing. i wish it was so much easier. wrist still hurts too. feels like im completely redoing all my code. had a working drop system back on day 2 and a working /database
 
 # Notes
 
@@ -55,6 +63,11 @@ For Day 3: Think if we should have a boss after every dungeon or ever so often
 
 # **NEED TO DO**
 
+- WORKING /users
+- WORKING /database
+- Test changing areas
+- Working click
+- working drop system
+- MAKE THE DROP CHANCE ACTUALLY HAVE CHANCE NOT 100%
 1. **Home Screen**
-2. **MAKE THE DROP CHANCE ACTUALLY HAVE CHANCE NOT 100%**
 3. **MAKE THE MONSTERS HAVE RANGES OF LEVELS AND STATS**

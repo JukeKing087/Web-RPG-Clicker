@@ -1,45 +1,170 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const clickButton = document.getElementById('clickButton');
+document.addEventListener("DOMContentLoaded", () => {
+  const dropdownButton = document.getElementById("dropdownButton");
+  const dropdownMenu = document.getElementById("dropdownMenu");
 
-    clickButton.addEventListener('click', handleClick);
+  if (dropdownButton && dropdownMenu) {
+    // Toggle the dropdown menu when the button is clicked
+    dropdownButton.addEventListener("click", (e) => {
+      e.stopPropagation(); // Prevent click event from propagating
+      dropdownMenu.classList.toggle("show"); // Toggle the visibility
+      console.log(
+        "Dropdown menu toggled:",
+        dropdownMenu.classList.contains("show") ? "Shown" : "Hidden"
+      );
+    });
 
-    // Fetch enemy data from the server
-    fetch('/game/enemy')
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json(); // Expect JSON response
-        })
-        .then(data => {
-            document.getElementById('enemyName').textContent = data.name;
-            document.getElementById('enemyLevel').textContent = data.level;
-            document.getElementById('enemyAttack').textContent = data.attack;
-            document.getElementById('enemyDefense').textContent = data.defense;
-            document.getElementById('enemyHealth').textContent = data.health;
-        })
-        .catch(error => {
-            console.error('Error fetching enemy data:', error);
-        });
+    // Hide the dropdown menu when clicking outside of it
+    document.addEventListener("click", () => {
+      if (dropdownMenu.classList.contains("show")) {
+        dropdownMenu.classList.remove("show");
+        console.log("Dropdown menu hidden");
+      }
+    });
+
+    // Prevent the dropdown menu from closing when clicking inside it
+    dropdownMenu.addEventListener("click", (e) => {
+      e.stopPropagation();
+      console.log("Dropdown menu click event stopped from propagating");
+    });
+  }
+
+  // Handle area selection from dropdown menu
+  document.querySelectorAll(".area-link").forEach((link) => {
+    link.addEventListener("click", (e) => {
+      e.preventDefault();
+      const area = e.target.getAttribute("data-area");
+      console.log("Area selected:", area);
+      // Implement your logic for changing the area here
+    });
+  });
+
+  const clickButton = document.getElementById("clickButton");
+  const clickAmount = document.getElementById("clickAmount");
+  const playerLevel = document.getElementById("playerLevel");
+  const playerXP = document.getElementById("playerXP");
+  const playerHealth = document.getElementById("playerHealth");
+  const playerMana = document.getElementById("playerMana");
+  const playerStrength = document.getElementById("playerStrength");
+  const playerAgility = document.getElementById("playerAgility");
+  const playerIntelligence = document.getElementById("playerIntelligence");
+  const playerEndurance = document.getElementById("playerEndurance");
+  const playerCharisma = document.getElementById("playerCharisma");
+  const enemyName = document.getElementById("enemyName");
+  const enemyLevel = document.getElementById("enemyLevel");
+  const enemyHealth = document.getElementById("enemyHealth");
+  const enemyMana = document.getElementById("enemyMana");
+  const enemyMaxHealth = document.getElementById("enemyMaxHealth");
+  const enemyMaxMana = document.getElementById("enemyMaxMana");
+  const enemyStrength = document.getElementById("enemyStrength");
+  const enemyAgility = document.getElementById("enemyAgility");
+  const enemyIntelligence = document.getElementById("enemyIntelligence");
+  const enemyEndurance = document.getElementById("enemyEndurance");
+  const enemyCharisma = document.getElementById("enemyCharisma");
+  const enemyAttack = document.getElementById("enemyAttack");
+  const enemyDefense = document.getElementById("enemyDefense");
+
+  let clicks = 0;
+  let playerData = {
+    level: playerLevel ? parseInt(playerLevel.textContent) : 0,
+    experience: playerXP ? parseInt(playerXP.textContent) : 0,
+    health: playerHealth
+      ? parseInt(playerHealth.textContent.split(" / ")[0])
+      : 0,
+    maxHealth: playerHealth
+      ? parseInt(playerHealth.textContent.split(" / ")[1])
+      : 0,
+    mana: playerMana ? parseInt(playerMana.textContent.split(" / ")[0]) : 0,
+    maxMana: playerMana ? parseInt(playerMana.textContent.split(" / ")[1]) : 0,
+    stats: {
+      strength: playerStrength ? parseInt(playerStrength.textContent) : 0,
+      agility: playerAgility ? parseInt(playerAgility.textContent) : 0,
+      intelligence: playerIntelligence
+        ? parseInt(playerIntelligence.textContent)
+        : 0,
+      endurance: playerEndurance ? parseInt(playerEndurance.textContent) : 0,
+      charisma: playerCharisma ? parseInt(playerCharisma.textContent) : 0,
+    },
+  };
+
+  let monsterData = {
+    name: enemyName ? enemyName.textContent : "Unknown",
+    level: enemyLevel ? parseInt(enemyLevel.textContent) : 0,
+    health: enemyHealth ? parseInt(enemyHealth.textContent) : 0,
+    maxHealth: enemyMaxHealth ? parseInt(enemyMaxHealth.textContent) : 0,
+    mana: enemyMana ? parseInt(enemyMana.textContent) : 0,
+    maxMana: enemyMaxMana ? parseInt(enemyMaxMana.textContent) : 0,
+    stats: {
+      strength: enemyStrength ? parseInt(enemyStrength.textContent) : 0,
+      agility: enemyAgility ? parseInt(enemyAgility.textContent) : 0,
+      intelligence: enemyIntelligence
+        ? parseInt(enemyIntelligence.textContent)
+        : 0,
+      endurance: enemyEndurance ? parseInt(enemyEndurance.textContent) : 0,
+      charisma: enemyCharisma ? parseInt(enemyCharisma.textContent) : 0,
+    },
+    attack: enemyAttack ? parseInt(enemyAttack.textContent) : 0,
+    defense: enemyDefense ? parseInt(enemyDefense.textContent) : 0,
+  };
+
+  function updateFrontend() {
+    if (playerLevel) playerLevel.textContent = playerData.level;
+    if (playerXP) playerXP.textContent = playerData.experience;
+    if (playerHealth)
+      playerHealth.textContent = `${playerData.health} / ${playerData.maxHealth}`;
+    if (playerMana)
+      playerMana.textContent = `${playerData.mana} / ${playerData.maxMana}`;
+    if (playerStrength) playerStrength.textContent = playerData.stats.strength;
+    if (playerAgility) playerAgility.textContent = playerData.stats.agility;
+    if (playerIntelligence)
+      playerIntelligence.textContent = playerData.stats.intelligence;
+    if (playerEndurance)
+      playerEndurance.textContent = playerData.stats.endurance;
+    if (playerCharisma) playerCharisma.textContent = playerData.stats.charisma;
+
+    if (enemyName) enemyName.textContent = monsterData.name;
+    if (enemyLevel) enemyLevel.textContent = monsterData.level;
+    if (enemyHealth) enemyHealth.textContent = monsterData.health;
+    if (enemyMaxHealth) enemyMaxHealth.textContent = monsterData.maxHealth;
+    if (enemyMana) enemyMana.textContent = monsterData.mana;
+    if (enemyMaxMana) enemyMaxMana.textContent = monsterData.maxMana;
+    if (enemyStrength) enemyStrength.textContent = monsterData.stats.strength;
+    if (enemyAgility) enemyAgility.textContent = monsterData.stats.agility;
+    if (enemyIntelligence)
+      enemyIntelligence.textContent = monsterData.stats.intelligence;
+    if (enemyEndurance)
+      enemyEndurance.textContent = monsterData.stats.endurance;
+    if (enemyCharisma) enemyCharisma.textContent = monsterData.stats.charisma;
+    if (enemyAttack) enemyAttack.textContent = monsterData.attack;
+    if (enemyDefense) enemyDefense.textContent = monsterData.defense;
+
+    console.log("Frontend updated with player and monster data");
+  }
+
+  if (clickButton) {
+    clickButton.addEventListener("click", () => {
+      clicks += 1;
+      if (clickAmount) clickAmount.textContent = `Clicks: ${clicks}`;
+      console.log("Click button pressed, total clicks:", clicks);
+
+      // Simulate attack logic
+      const damage = Math.max(
+        1,
+        playerData.stats.strength - monsterData.defense
+      );
+      monsterData.health -= damage;
+      console.log("Calculated damage:", damage);
+
+      if (monsterData.health <= 0) {
+        monsterData.health = 0;
+        alert("Monster defeated!");
+        console.log("Monster defeated");
+        // You can add logic here to handle monster defeat, e.g., level up the player, change monster, etc.
+      }
+
+      updateFrontend();
+    });
+  }
+
+  // Initialize frontend
+  updateFrontend();
 });
-
-async function handleClick() {
-    try {
-        const response = await fetch('/game/click', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ data: 1 }),
-        });
-
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-
-        const result = await response.json();
-        console.log('Click result:', result);
-    } catch (error) {
-        console.error('Error:', error);
-    }
-}
