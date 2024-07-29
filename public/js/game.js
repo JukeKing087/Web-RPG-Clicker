@@ -30,11 +30,34 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Handle area selection from dropdown menu
   document.querySelectorAll(".area-link").forEach((link) => {
-    link.addEventListener("click", (e) => {
+    link.addEventListener("click", async (e) => {
       e.preventDefault();
       const area = e.target.getAttribute("data-area");
       console.log("Area selected:", area);
-      // Implement your logic for changing the area here
+
+      // Send a POST request to update the user's area
+      try {
+        const response = await fetch("/game/user/update-area", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify({ area }),
+        });
+
+        const data = await response.json();
+        if (data.success) {
+          console.log("Area updated successfully:", data.message);
+          // Optionally refresh the page or update UI
+          // location.reload(); // or update UI elements to reflect the change
+          location.reload();
+        } else {
+          console.error("Error updating area:", data.error);
+        }
+      } catch (error) {
+        console.error("Error updating area:", error);
+      }
     });
   });
 
