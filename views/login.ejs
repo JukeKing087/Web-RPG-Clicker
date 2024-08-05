@@ -14,11 +14,14 @@
     <form method="POST" action="/login">
       <div class="mb-4">
         <label for="username" class="block text-gray-700">Username</label>
-        <input type="text" id="username" name="username" class="w-full border border-gray-300 p-2 rounded" required>
+        <input type="text" id="username" name="username" class="w-full border border-gray-300 p-2 rounded focus:border-blue-500" required>
       </div>
       <div class="mb-6">
         <label for="password" class="block text-gray-700">Password</label>
-        <input type="password" id="password" name="password" class="w-full border border-gray-300 p-2 rounded" required>
+        <input type="password" id="password" name="password" class="w-full border border-gray-300 p-2 rounded pr-10" required>
+        <button type="button" class="absolute inset-y-0 right-0 px-3 py-1.5 text-gray-600 hover:text-gray-900">
+          <!-- Icon for visibility toggle -->
+        </button>
       </div>
       <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">Login</button>
     </form>

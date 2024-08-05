@@ -1,15 +1,68 @@
 // router/gameRoutes.js
 
 const express = require("express");
-const setUserMiddleware = require("../middleware/authMiddleware");
-const { getUserProfile, giveMonster } = require("./gameLogic"); // Adjust path as needed
+
 const User = require("../database/userDB");
+const { giveMonster } = require("./gameLogic");
 
 const logger = require("../logger"); // Import the logger
 
 const router = express.Router();
 
-router.use("/user", setUserMiddleware);
+router.get("/", async (req, res) => {
+  try {
+    logger.log("server.js", "Received request to /game", "info");
+
+    // Check if the user is authenticated
+    if (!req.user || !req.user._id) {
+      logger.log("server.js", "Unauthorized: User not authenticated", "error");
+      return res.status(401).send("Unauthorized: User not authenticated");
+    }
+
+    // Fetch user data
+    logger.log("server.js", `User ID: ${req.user._id}`, "info");
+    const user = await User.findById(req.user._id).exec();
+    logger.log("server.js", `Fetched User: ${JSON.stringify(user)}`, "info");
+
+    if (!user) {
+      logger.log("server.js", "User not found", "error");
+      return res.status(404).send("User not found");
+    }
+
+    // Get and process area name
+    const areaName = user.player.attributes.area.toLowerCase();
+    logger.log("server.js", `Area Name: ${areaName}`, "info");
+
+    if (areaName === "village") {
+      logger.log(
+        "server.js",
+        "User is in the village area. Rendering game with no monster.",
+        "info"
+      );
+      return res.render("game", { user, monster: null });
+    }
+
+    // Use the giveMonster function to get a monster for the area
+    const selectedMonster = await giveMonster(areaName);
+    logger.log(
+      "server.js",
+      `Selected Monster: ${JSON.stringify(selectedMonster)}`,
+      "info"
+    );
+
+    // Render the game with the selected monster
+    logger.log("server.js", "Rendering game with selected monster", "info");
+    res.render("game", { user, monster: selectedMonster });
+  } catch (err) {
+    logger.log(
+      "server.js",
+      `Error occurred during request handling: ${err.message}`,
+      "error"
+    );
+    logger.log("server.js", `Stack Trace: ${err.stack}`, "error");
+    res.status(500).send("Server error");
+  }
+});
 
 // GET user profile
 router.get("/user/profile", async (req, res) => {

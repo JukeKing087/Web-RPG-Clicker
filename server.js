@@ -2,25 +2,39 @@
 
 const express = require("express");
 const session = require("express-session");
+const mongoose = require("mongoose");
 const path = require("path");
-const axios = require("axios");
 
-const passport = require("./passportConfig");
 const authRoutes = require("./routes/authRoutes");
 const dataRoutes = require("./routes/dataRoutes");
-const gameRoutes = require("./routes/gameRoutes"); // Import the function
-const { giveMonster } = require("./routes/gameLogic");
+const gameRoutes = require("./routes/gameRoutes");
+
+const redirectionLog = require("./middleware/redirectionLog");
 const authMiddleware = require("./middleware/authMiddleware");
-const User = require("./database/userDB");
 
 const logger = require("./logger"); // Import the logger
+const passport = require("./passportConfig");
 
 const app = express();
 const port = 3000;
 
+// MongoDB connection
+mongoose.connect(
+  "mongodb+srv://NazaRepr:Ace087Ace0807!@cluster0.7x4blwu.mongodb.net/gameDatabase",
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  }
+);
+
 // Middleware Setup
-app.use(express.json()); // For parsing application/json
 app.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
+app.use(express.json()); // For parsing application/json
+app.use(express.static("public"));
+
+// Set EJS as the template engine
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
 
 // Session Configuration
 app.use(
@@ -37,78 +51,18 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Route Middleware
-app.use(authRoutes);
-app.use(authMiddleware); // Ensure authMiddleware is added after passport initialization
-
-// Set EJS as the template engine
-app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
-
-// Serve Static Files
-app.use(express.static(path.join(__dirname, "public")));
+app.use(redirectionLog);
+app.use(authMiddleware);
 
 // Define Routes
 app.get("/", (req, res) => {
   res.render("index");
 });
 
+// Define Routes
+app.use("/", authRoutes);
 app.use("/database", dataRoutes);
 app.use("/game", gameRoutes);
-
-app.get("/game", async (req, res) => {
-  try {
-    logger.log("server.js", "Received request to /game", "info");
-
-    // Check if the user is authenticated
-    if (!req.user || !req.user._id) {
-      logger.log("server.js", "Unauthorized: User not authenticated", "error");
-      return res.status(401).send("Unauthorized: User not authenticated");
-    }
-
-    // Fetch user data
-    logger.log("server.js", `User ID: ${req.user._id}`, "info");
-    const user = await User.findById(req.user._id).exec();
-    logger.log("server.js", `Fetched User: ${JSON.stringify(user)}`, "info");
-
-    if (!user) {
-      logger.log("server.js", "User not found", "error");
-      return res.status(404).send("User not found");
-    }
-
-    // Get and process area name
-    const areaName = user.player.attributes.area.toLowerCase();
-    logger.log("server.js", `Area Name: ${areaName}`, "info");
-
-    if (areaName === "village") {
-      logger.log(
-        "server.js",
-        "User is in the village area. Rendering game with no monster.",
-        "info"
-      );
-      return res.render("game", { user, monster: null });
-    }
-
-    // Use the giveMonster function to get a monster for the area
-    const selectedMonster = await giveMonster(areaName);
-    logger.log(
-      "server.js",
-      `Selected Monster: ${JSON.stringify(selectedMonster)}`,
-      "info"
-    );
-
-    // Render the game with the selected monster
-    logger.log("server.js", "Rendering game with selected monster", "info");
-    res.render("game", { user, monster: selectedMonster });
-  } catch (err) {
-    logger.log(
-      "server.js",
-      `Error occurred during request handling: ${err.message}`,
-      "error"
-    );
-    logger.log("server.js", `Stack Trace: ${err.stack}`, "error");
-    res.status(500).send("Server error");
-  }
-});
 
 // Handle 404 Errors
 app.use((req, res, next) => {

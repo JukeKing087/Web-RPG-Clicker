@@ -17,6 +17,8 @@ const scriptLoggingSettings = {
   "itemsDB.js": true,
   "monstersDB.js": true,
   "userDB.js": true,
+  "passportConfig.js": true,
+  "requestLogger.js": true,
 };
 
 function log(scriptName, message, level = "info") {

@@ -12,7 +12,7 @@
     1. learn react
     2. static Site
     3. Post on Github
-
+    
 - OR
     1. Use vite site
 
@@ -30,7 +30,7 @@ For Day 3: Think if we should have a boss after every dungeon or ever so often
 
 ## Day Three
 
-1. Kyle was over today, we ramped the jumps and I have a mild wrist sprain so I didn't get to code much. Authorization completely works now. I got the database on MongoDB now im transferring the reading to it. soon ill have to use /database/:prefix/:id to get items and monsters. Right now I have to do the items and equipment after I get the monster reading to work, I also think I going to do the monster chooser by hand based on "Maps/Areas". 
+1. Kyle was over today, we ramped the jumps and I have a mild wrist sprain so I didn't get to code much. Authorization completely works now. I got the database on MongoDB now im transferring the reading to it. soon ill have to use /database/:prefix/:id to get items and monsters. Right now I have to do the items and equipment after I get the monster reading to work, I also think I going to do the monster chooser by hand based on "Maps/Areas".
 
 ## Day Four
 
@@ -41,6 +41,18 @@ For Day 3: Think if we should have a boss after every dungeon or ever so often
 ## Day Six
 
 1. I'm at the other house now, I got a TON working. in the last 7 hours, dinner to 1, i got the gui to work, along with clicking AND a logging system. I updated the layout for everything too. Updated database to have clicks and col currency. **I LEARNED THE DATABASE DOESN'T UPDATE, SO WHEN YOU MAKE SOMETHING NEW, YOU HAVE TO DELETE THE SAVE OR DO IT MANUALLY!** so that might be a problem in the future, but we can get around that right? Wrist Update: Doesn't hurt at all anymore, just dont move it up.
+
+## Day Seven
+
+1. Its 1:18 im working on village part of game and the shopping district then ill go back to the monster part. Good looking Shop screen and home menu, just needs to be tweaked
+
+## Day Eight
+
+1. I need to work on sleep next few weeks, its 3:45 and i just got the validation for schema to work, i turned the shop screen into a one page shop and checkout with sidebar along with one for Cols display. I also made a Redirection Log/Tracker. We ARE ALSO using a new package called joi to do the schema validation. user._id is now available. and i completely broke server.js and any other routing system, so im going to have to fix that, mainly game.js and game.ejs.
+
+## Day 14?
+
+1. Had to let wrist heal up before coding more. Its almost there i think. Okay Project Log: i was trying to make a user Schema Validation but i completly messes up login and, well, everything, so i completely removed it i think, and im leaving the improved code.
 
 # Notes
 
@@ -69,8 +81,16 @@ For Day 3: Think if we should have a boss after every dungeon or ever so often
 
 # **NEED TO DO**
 
+- front end updating (game.ejs and game.js)
+- Complete Village Area
+  - Home Shopping Page
+  - ALL Shopping Pages
+  - Routes
+- Quest Page
+- Auto Save (5 minutes and button)
 - working monster death system (drop system, exp, and new monster)
 - MAKE THE DROP CHANCE ACTUALLY HAVE CHANCE NOT 100%
 - working player leveling
 - working player attribute (choosing them and stuff like that)
-- Home Screen
+- Home Page
+- Database Page
