@@ -4,7 +4,6 @@
   "description": "A web application with authentication using Passport.js and MongoDB",
   "main": "app.js",
   "scripts": {
-    "start": "node index.js",
     "dev": "nodemon server.js",
     "build:css": "npx tailwindcss -i ./src/styles/tailwind.css -o ./public/styles/tailwind.css --watch"
   },

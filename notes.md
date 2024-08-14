@@ -54,6 +54,10 @@ For Day 3: Think if we should have a boss after every dungeon or ever so often
 
 1. Had to let wrist heal up before coding more. Its almost there i think. Okay Project Log: i was trying to make a user Schema Validation but i completly messes up login and, well, everything, so i completely removed it i think, and im leaving the improved code.
 
+## Day 22? (8/14/2024)
+
+1. Im back, ready to code. Completely forgot what i was working on last time.
+
 # Notes
 
 ## Drop System

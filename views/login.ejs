@@ -1,32 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+    <link href="/styles/tailwind.css" rel="stylesheet" />
+  </head>
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login</title>
-  <link href="/styles/tailwind.css" rel="stylesheet">
-</head>
-
-<body class="font-sans bg-gray-100 flex items-center justify-center h-screen">
-  <div class="w-full max-w-md bg-white shadow-lg rounded-lg p-6">
-    <h2 class="text-2xl font-bold mb-6 text-center">Login</h2>
-    <form method="POST" action="/login">
-      <div class="mb-4">
-        <label for="username" class="block text-gray-700">Username</label>
-        <input type="text" id="username" name="username" class="w-full border border-gray-300 p-2 rounded focus:border-blue-500" required>
-      </div>
-      <div class="mb-6">
-        <label for="password" class="block text-gray-700">Password</label>
-        <input type="password" id="password" name="password" class="w-full border border-gray-300 p-2 rounded pr-10" required>
-        <button type="button" class="absolute inset-y-0 right-0 px-3 py-1.5 text-gray-600 hover:text-gray-900">
-          <!-- Icon for visibility toggle -->
+  <body class="font-sans bg-gray-100 flex items-center justify-center h-screen">
+    <div class="w-full max-w-md bg-white shadow-lg rounded-lg p-6">
+      <h2 class="text-2xl font-bold mb-6 text-center">Login</h2>
+      <form method="POST" action="/login">
+        <div class="mb-4 relative">
+          <label for="username" class="block text-gray-700">Username</label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            class="w-full border border-gray-300 p-2 rounded focus:border-blue-500"
+            required
+          />
+        </div>
+        <div class="mb-6 relative">
+          <label for="password" class="block text-gray-700">Password</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            class="w-full border border-gray-300 p-2 rounded pr-10"
+            required
+          />
+          <button
+            type="button"
+            class="absolute inset-y-0 right-0 px-3 py-1.5 text-gray-600 hover:text-gray-900"
+          >
+            <!-- Icon for visibility toggle -->
+          </button>
+        </div>
+        <button
+          type="submit"
+          class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
+        >
+          Login
         </button>
-      </div>
-      <button type="submit" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">Login</button>
-    </form>
-    <p class="text-center mt-4">Don't have an account? <a href="/signup" class="text-blue-600 hover:underline">Sign Up</a></p>
-  </div>
-</body>
-
+      </form>
+      <p class="text-center mt-4">
+        Don't have an account?
+        <a href="/signup" class="text-blue-600 hover:underline">Sign Up</a>
+      </p>
+    </div>
+  </body>
 </html>
